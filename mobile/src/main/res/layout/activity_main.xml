@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:background="#fff"/>
+
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/first"
+            android:id="@+id/states">
+
+            <RadioButton
+                android:id="@+id/btn_introduction"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:padding="30dp"
+                android:textColor="@color/yellow_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Introduction"/>
+
+            <RadioButton
+                android:id="@+id/btn_electricity"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:padding="30dp"
+                android:textColor="@color/yellow_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Electricity"/>
+
+            <RadioButton
+                android:id="@+id/btn_water"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:padding="30dp"
+                android:textColor="@color/yellow_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Water"/>
+
+            <RadioButton
+                android:id="@+id/btn_gas"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:padding="30dp"
+                android:textColor="@color/yellow_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Gas"/>
+
+            <RadioButton
+                android:id="@+id/btn_announcements"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:padding="30dp"
+                android:textColor="@color/yellow_text"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Announcements"/>
+        </RadioGroup>
+
+        <TabWidget android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:visibility="gone"
+            android:clickable="true"/>
+    </LinearLayout>
+</TabHost>
