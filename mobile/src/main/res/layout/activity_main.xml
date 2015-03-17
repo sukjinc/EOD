@@ -16,58 +16,15 @@
             android:layout_weight="1"
             android:background="#fff">
 
-            <ViewFlipper
-                android:id="@+id/view_flipper"
+            <GridView
+                android:id="@+id/grid_view"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_gravity="center">
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="center">
-
-                    <eod.uaa.announcements.ScaleImageView
-                        android:id="@+id/previous"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" >
-
-                    <eod.uaa.announcements.ScaleImageView
-                        android:id="@+id/current"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" >
-
-                    <eod.uaa.announcements.ScaleImageView
-                        android:id="@+id/next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        />
-
-                </RelativeLayout>
-            </ViewFlipper>
+                android:numColumns="auto_fit"
+                android:gravity="center"
+                android:stretchMode="columnWidth"
+                android:background="#000000">
+            </GridView>
 
         </FrameLayout>
 
@@ -75,7 +32,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:checkedButton="@+id/first"
+            android:checkedButton="@id/btn_introduction"
             android:id="@+id/states">
 
             <RadioButton
@@ -88,7 +45,8 @@
                 android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Introduction"/>
+                android:text="Introduction"
+                android:onClick="testDatabase"/>
 
             <RadioButton
                 android:id="@+id/btn_electricity"
