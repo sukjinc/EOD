@@ -16,15 +16,37 @@
             android:layout_weight="1"
             android:background="#fff">
 
-            <GridView
-                android:id="@+id/grid_view"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:numColumns="auto_fit"
-                android:gravity="center"
-                android:stretchMode="columnWidth"
-                android:background="#000000">
-            </GridView>
+                android:background="#000000"/>
+
+            <com.androidplot.xy.XYPlot
+                android:background = "@color/uaagreen_primary"
+                android:id="@+id/XYPlot"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                androidPlot.title="Electric Usage VS Time"
+                androidPlot.domainLabel="Time"
+                androidPlot.rangeLabel="Electricity Usage (kW)"
+                androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
+                androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+                androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+                androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                androidPlot.graphWidget.marginTop="30dp"
+                androidPlot.graphWidget.marginLeft="30dp"
+                androidPlot.graphWidget.marginBottom="30dp"
+                androidPlot.graphWidget.marginRight="20dp"
+                androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                androidPlot.graphWidget.backgroundPaint.color="WHITE"
+
+                />
 
         </FrameLayout>
 
@@ -33,7 +55,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:checkedButton="@id/btn_introduction"
-            android:id="@+id/states">
+            android:id="@+id/states"
+            android:background="@color/uaagold_primary">
 
             <RadioButton
                 android:id="@+id/btn_introduction"
@@ -41,12 +64,19 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 style="@style/TabStyle"
-                android:padding="30dp"
-                android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="Introduction"
-                android:onClick="testDatabase"/>
+                android:onClick="testDatabase"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
 
             <RadioButton
                 android:id="@+id/btn_electricity"
@@ -54,11 +84,18 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 style="@style/TabStyle"
-                android:padding="30dp"
-                android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Electricity"/>
+                android:text="Electricity"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
 
             <RadioButton
                 android:id="@+id/btn_water"
@@ -66,11 +103,37 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 style="@style/TabStyle"
-                android:padding="30dp"
-                android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Water"/>
+                android:text="Water"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
+
+            <RadioButton
+                android:id="@+id/btn_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                style="@style/TabStyle"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Temperature"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
 
             <RadioButton
                 android:id="@+id/btn_gas"
@@ -78,11 +141,18 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 style="@style/TabStyle"
-                android:padding="30dp"
-                android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Gas"/>
+                android:text="Gas"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
 
             <RadioButton
                 android:id="@+id/btn_announcements"
@@ -90,11 +160,16 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 style="@style/TabStyle"
-                android:padding="30dp"
-                android:textColor="@color/yellow_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Announcements"/>
+                android:text="Announcements"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="30dp"
+                android:paddingTop="30dp"
+                android:gravity="center"
+                android:background="@drawable/uaa_button_background"
+                android:textColor="@drawable/uaa_button_text"/>
         </RadioGroup>
 
         <TabWidget android:id="@android:id/tabs"

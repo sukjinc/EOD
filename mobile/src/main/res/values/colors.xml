@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="yellow_text">#ffff33</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="uaagreen_primary">#00583D</color>
+    <color name="uaagold_primary">#ffc425</color>
+    <color name="uaagreen_secondary">#4ea685</color>
+    <color name="uaagold_secondary">#fee300</color>
 </resources>
