@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eod.uaa.eod">
+    package="eod.uaa.main">
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="eod.uaa.main.MainActivity"
             android:screenOrientation="landscape"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.NoActionBar">

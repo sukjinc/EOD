@@ -1,4 +1,4 @@
-package eod.uaa.eod;
+package eod.uaa.main;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

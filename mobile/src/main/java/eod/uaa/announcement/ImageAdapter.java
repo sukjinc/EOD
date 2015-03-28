@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-import eod.uaa.eod.R;
+import eod.uaa.main.R;
 
 public class ImageAdapter extends PagerAdapter {
 
