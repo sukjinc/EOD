@@ -338,8 +338,8 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        lineFill.setAlpha(200);
+        lineFill.setShader(new LinearGradient(40,50,50,250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
     private void initWaterGraphLayout()
@@ -393,7 +393,7 @@ public class MainActivity extends Activity {
 
         Paint lineFill = new Paint(); //Shade Format b
         lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        lineFill.setShader(new LinearGradient(0,0,0,250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
 
@@ -447,8 +447,8 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        lineFill.setAlpha(255);
+        lineFill.setShader(new LinearGradient(0,40,50,250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
 
