@@ -3,7 +3,6 @@ package eod.uaa.state;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brent on 3/28/2015.
@@ -26,7 +25,10 @@ public class ScreenSaver
             if(numberOfAnnouncements == -1) // error
                 return;
 
-            stateList.add(new ElectricityState());
+            stateList.add(new State(StateType.ELECTRICITY));
+            stateList.add(new State(StateType.WATER));
+            stateList.add(new State(StateType.TEMPERATURE));
+            stateList.add(new State(StateType.GAS));
             for(int i = 0; i < numberOfAnnouncements; i++)
             {
                 stateList.add(new AnnouncementState(i));

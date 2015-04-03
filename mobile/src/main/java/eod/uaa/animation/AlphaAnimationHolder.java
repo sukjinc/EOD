@@ -7,8 +7,9 @@ import android.view.animation.AlphaAnimation;
  */
 public class AlphaAnimationHolder
 {
-    public static final AlphaAnimation fadeInElectricity = new AlphaAnimation(0.0f, 1.0f);
-    public static final AlphaAnimation fadeOutElectricity = new AlphaAnimation(0.0f, 1.0f);
+    public static final AlphaAnimation fadeInElec = new AlphaAnimation(0.0f, 1.0f);
+    public static final AlphaAnimation fadeInWater = new AlphaAnimation(0.0f, 1.0f);
+    public static final AlphaAnimation fadeInTemp = new AlphaAnimation(0.0f, 1.0f);
+    public static final AlphaAnimation fadeInGas = new AlphaAnimation(0.0f, 1.0f);
     public static final AlphaAnimation fadeInAnnouncements = new AlphaAnimation(0.0f, 1.0f);
-    public static final AlphaAnimation fadeOutAnnouncements = new AlphaAnimation(0.0f, 1.0f);
 }

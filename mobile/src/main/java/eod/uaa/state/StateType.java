@@ -5,5 +5,5 @@ package eod.uaa.state;
  */
 public enum StateType
 {
-    ELECTRICITY, ANNOUNCEMENTS
+    ELECTRICITY, WATER, TEMPERATURE, GAS, ANNOUNCEMENTS
 }

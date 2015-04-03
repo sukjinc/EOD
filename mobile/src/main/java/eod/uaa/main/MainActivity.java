@@ -66,7 +66,10 @@ public class MainActivity extends Activity {
     private InfinitePagerAdapter infinitePagerAdapter;
     private ViewPager viewPager;
 
-    private XYPlot plot;
+    private XYPlot elecPlot;
+    private XYPlot waterPlot;
+    private XYPlot tempPlot;
+    private XYPlot gasPlot;
 
     private Timer screenTimer;
     private Timer moverTimer;
@@ -90,12 +93,18 @@ public class MainActivity extends Activity {
         btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
 
         initAnnouncementLayout();
-        initGraphLayout();
+        initElecGraphLayout();
+        initTempGraphLayout();
+        initGasGraphLayout();
+        initWaterGraphLayout();
         initFadeAnimations();
         initTimers();
 
         viewPager.setVisibility(View.INVISIBLE);
-        plot.setVisibility(View.INVISIBLE);
+        elecPlot.setVisibility(View.INVISIBLE);
+        waterPlot.setVisibility(View.INVISIBLE);
+        tempPlot.setVisibility(View.INVISIBLE);
+        gasPlot.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -129,8 +138,17 @@ public class MainActivity extends Activity {
 
     private void initFadeAnimations()
     {
-        AlphaAnimationHolder.fadeInElectricity.setDuration(1000);
-        AlphaAnimationHolder.fadeInElectricity.setAnimationListener(new FadeAnimationListener(plot, radioGroup));
+        AlphaAnimationHolder.fadeInElec.setDuration(1000);
+        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInWater.setDuration(1000);
+        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInTemp.setDuration(1000);
+        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInGas.setDuration(1000);
+        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot, radioGroup));
 
         AlphaAnimationHolder.fadeInAnnouncements.setDuration(1000);
         AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager, radioGroup));
@@ -144,8 +162,22 @@ public class MainActivity extends Activity {
                 if(checkedRadioButton == btnElectricity)
                 {
                     clearGUI();
-                    plot.startAnimation(AlphaAnimationHolder.fadeInElectricity);
-
+                    elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
+                }
+                else if(checkedRadioButton == btnWater)
+                {
+                    clearGUI();
+                    waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
+                }
+                else if(checkedRadioButton == btnTemperature)
+                {
+                    clearGUI();
+                    tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
+                }
+                else if(checkedRadioButton == btnGas)
+                {
+                    clearGUI();
+                    gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
                 }
                 else if(checkedRadioButton == btnAnnouncements)
                 {
@@ -201,7 +233,7 @@ public class MainActivity extends Activity {
 
     }
 
-    private void initGraphLayout()
+    private void initElecGraphLayout()
     {
         //Must get data and generate arrays.
         float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
@@ -211,7 +243,7 @@ public class MainActivity extends Activity {
         Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
 
         // initialize our XYPlot reference:
-        plot = (XYPlot) findViewById(R.id.XYPlot);
+        elecPlot = (XYPlot) findViewById(R.id.elecPlot);
 
         XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Electricity Usage Plot");
 
@@ -219,13 +251,177 @@ public class MainActivity extends Activity {
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
         plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_elec);
 
-        plot.getLegendWidget().setWidth(0); //Disable Legend
+        elecPlot.getLegendWidget().setWidth(0); //Disable Legend
         //------- Range Domain Format -----
-        plot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+        elecPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
 
-        plot.addSeries(myPlot, plotFormat);
-        plot.setRangeValueFormat(new DecimalFormat("0"));
-        plot.setDomainValueFormat(new Format() {
+        elecPlot.addSeries(myPlot, plotFormat);
+        elecPlot.setRangeValueFormat(new DecimalFormat("0"));
+        elecPlot.setDomainValueFormat(new Format() {
+            // create a simple date format that draws on the year portion of our timestamp.
+            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+            // for a full description of SimpleDateFormat.
+
+            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+
+                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                // we multiply our timestamp by 1000:
+                long timestamp = ((Number) obj).longValue() * 1000;
+                Date date = new Date(timestamp);
+                return dateFormat.format(date, toAppendTo, pos);
+            }
+
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+
+            }
+        });
+
+
+        Paint lineFill = new Paint(); //Shade Format b
+        lineFill.setAlpha(100);
+        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        plotFormat.setFillPaint(lineFill);
+    }
+
+    private void initTempGraphLayout()
+    {
+        //Must get data and generate arrays.
+        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float min = GraphHelper.getMin(intreadings);
+        float max = GraphHelper.getMax(intreadings);
+        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
+        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+
+        // initialize our XYPlot reference:
+        tempPlot = (XYPlot) findViewById(R.id.tempPlot);
+
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Temperature Plot");
+
+        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_temp);
+
+        tempPlot.getLegendWidget().setWidth(0); //Disable Legend
+        //------- Range Domain Format -----
+        tempPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+
+        tempPlot.addSeries(myPlot, plotFormat);
+        tempPlot.setRangeValueFormat(new DecimalFormat("0"));
+        tempPlot.setDomainValueFormat(new Format() {
+            // create a simple date format that draws on the year portion of our timestamp.
+            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+            // for a full description of SimpleDateFormat.
+
+            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+
+                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                // we multiply our timestamp by 1000:
+                long timestamp = ((Number) obj).longValue() * 1000;
+                Date date = new Date(timestamp);
+                return dateFormat.format(date, toAppendTo, pos);
+            }
+
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+
+            }
+        });
+
+
+        Paint lineFill = new Paint(); //Shade Format b
+        lineFill.setAlpha(100);
+        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        plotFormat.setFillPaint(lineFill);
+    }
+    private void initWaterGraphLayout()
+    {
+        //Must get data and generate arrays.
+        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float min = GraphHelper.getMin(intreadings);
+        float max = GraphHelper.getMax(intreadings);
+        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
+        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+
+        // initialize our XYPlot reference:
+        waterPlot = (XYPlot) findViewById(R.id.waterPlot);
+
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Water Usage Plot");
+
+        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_water);
+
+        waterPlot.getLegendWidget().setWidth(0); //Disable Legend
+        //------- Range Domain Format -----
+        waterPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+
+        waterPlot.addSeries(myPlot, plotFormat);
+        waterPlot.setRangeValueFormat(new DecimalFormat("0"));
+        waterPlot.setDomainValueFormat(new Format() {
+            // create a simple date format that draws on the year portion of our timestamp.
+            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+            // for a full description of SimpleDateFormat.
+
+            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+
+                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                // we multiply our timestamp by 1000:
+                long timestamp = ((Number) obj).longValue() * 1000;
+                Date date = new Date(timestamp);
+                return dateFormat.format(date, toAppendTo, pos);
+            }
+
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+
+            }
+        });
+
+
+        Paint lineFill = new Paint(); //Shade Format b
+        lineFill.setAlpha(100);
+        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        plotFormat.setFillPaint(lineFill);
+    }
+
+    private void initGasGraphLayout()
+    {
+        //Must get data and generate arrays.
+        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float min = GraphHelper.getMin(intreadings);
+        float max = GraphHelper.getMax(intreadings);
+        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
+        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+
+        // initialize our XYPlot reference:
+        gasPlot = (XYPlot) findViewById(R.id.gasPlot);
+
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Gas Usage Plot");
+
+        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_gas);
+
+        gasPlot.getLegendWidget().setWidth(0); //Disable Legend
+        //------- Range Domain Format -----
+        gasPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+
+        gasPlot.addSeries(myPlot, plotFormat);
+        gasPlot.setRangeValueFormat(new DecimalFormat("0"));
+        gasPlot.setDomainValueFormat(new Format() {
             // create a simple date format that draws on the year portion of our timestamp.
             // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
             // for a full description of SimpleDateFormat.
@@ -321,11 +517,7 @@ public class MainActivity extends Activity {
                         // if scrolling to the first announcement, then the previous state was not announcements
                         if(announcementToScrollTo == 0)
                         {
-                            // uncheck all buttons
-                            for(int i = 0; i < radioGroup.getChildCount(); i++)
-                            {
-                                ((RadioButton)radioGroup.getChildAt(i)).setChecked(false);
-                            }
+                            uncheckButtons();
                             viewPager.setCurrentItem(0);
                             btnAnnouncements.setChecked(true);
                         }
@@ -337,16 +529,28 @@ public class MainActivity extends Activity {
                     }
                     else if(ScreenSaver.currentState.stateType == StateType.ELECTRICITY)
                     {
-                        // uncheck all buttons
-                        for(int i = 0; i < radioGroup.getChildCount(); i++)
-                        {
-                            ((RadioButton) radioGroup.getChildAt(i)).setChecked(false);
-                        }
-
+                        uncheckButtons();
                         btnElectricity.setChecked(true);
                     }
+                    else if(ScreenSaver.currentState.stateType == StateType.WATER)
+                    {
+                        uncheckButtons();
+                        btnWater.setChecked(true);
+                    }
+                    else if(ScreenSaver.currentState.stateType == StateType.TEMPERATURE)
+                    {
+                        uncheckButtons();
+                        btnTemperature.setChecked(true);
+                    }
+                    else if(ScreenSaver.currentState.stateType == StateType.GAS)
+                    {
+                        uncheckButtons();
+                        btnGas.setChecked(true);
+                    }
+
+
                 }
-            });
+            } );
         }
     }
 
@@ -356,11 +560,35 @@ public class MainActivity extends Activity {
         viewPager.setAnimation(null);
         viewPager.setVisibility(View.GONE);
         AlphaAnimationHolder.fadeInAnnouncements.cancel();
-        plot.clearAnimation();
-        plot.setAnimation(null);
-        plot.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInElectricity.cancel();
+
+        elecPlot.clearAnimation();
+        elecPlot.setAnimation(null);
+        elecPlot.setVisibility(View.GONE);
+        AlphaAnimationHolder.fadeInElec.cancel();
+
+        waterPlot.clearAnimation();
+        waterPlot.setAnimation(null);
+        waterPlot.setVisibility(View.GONE);
+        AlphaAnimationHolder.fadeInWater.cancel();
+
+        tempPlot.clearAnimation();
+        tempPlot.setAnimation(null);
+        tempPlot.setVisibility(View.GONE);
+        AlphaAnimationHolder.fadeInWater.cancel();
+
+        gasPlot.clearAnimation();
+        gasPlot.setAnimation(null);
+        gasPlot.setVisibility(View.GONE);
+        AlphaAnimationHolder.fadeInGas.cancel();
 
     }
 
+    private void uncheckButtons()
+    {
+        // uncheck all buttons
+        for(int i = 0; i < radioGroup.getChildCount(); i++)
+        {
+            ((RadioButton) radioGroup.getChildAt(i)).setChecked(false);
+        }
+     }
 }
