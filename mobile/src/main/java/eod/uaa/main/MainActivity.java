@@ -590,5 +590,5 @@ public class MainActivity extends Activity {
         {
             ((RadioButton) radioGroup.getChildAt(i)).setChecked(false);
         }
-     }
+    }
 }
