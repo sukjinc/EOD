@@ -108,27 +108,25 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
-    {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         super.dispatchTouchEvent(ev);
 
-        if(screenTimer != null)
+        if (screenTimer != null)
             screenTimer.cancel();
         screenTimer = new Timer();
-        if(screenTimerTask != null)
+        if (screenTimerTask != null)
             screenTimerTask.cancel();
 
         screenTimerTask = new ScreenTimerTask();
         screenTimer.schedule(screenTimerTask, 5000);
 
-        if(moverTimer != null)
+        if (moverTimer != null)
             moverTimer.cancel();
 
         return true;
     }
 
-    private void initTimers()
-    {
+    private void initTimers() {
         screenTimerTask = new ScreenTimerTask();
         moverTimerTask = new MoverTimerTask();
         screenTimer = new Timer();
@@ -136,7 +134,7 @@ public class MainActivity extends Activity {
         screenTimer.schedule(screenTimerTask, 5000);
     }
 
-    private void initFadeAnimations()
+    /*private void initFadeAnimations()
     {
         AlphaAnimationHolder.fadeInElec.setDuration(1000);
         AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot, radioGroup));
@@ -153,43 +151,99 @@ public class MainActivity extends Activity {
         AlphaAnimationHolder.fadeInAnnouncements.setDuration(1000);
         AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager, radioGroup));
 
+
+
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             public void onCheckedChanged(RadioGroup rGroup, int checkedId)
             {
-                RadioButton checkedRadioButton = (RadioButton)rGroup.findViewById(checkedId);
 
-                if(checkedRadioButton == btnElectricity)
+                if(checkedId == R.id.btn_electricity)
                 {
                     clearGUI();
+                    //radioGroup.clearCheck();
+                    //radioGroup.check(btnElectricity.getId());
                     elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
                 }
-                else if(checkedRadioButton == btnWater)
+                else if(checkedId == R.id.btn_water)
                 {
                     clearGUI();
+                    // radioGroup.clearCheck();
+                    //radioGroup.check(btnWater.getId());
                     waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
                 }
-                else if(checkedRadioButton == btnTemperature)
+                else if(checkedId == R.id.btn_temperature)
                 {
                     clearGUI();
+                    // radioGroup.clearCheck();
+                    //radioGroup.check(btnTemperature.getId());
                     tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
                 }
-                else if(checkedRadioButton == btnGas)
+                else if(checkedId == R.id.btn_gas)
                 {
                     clearGUI();
+                    //radioGroup.clearCheck();
+                    //radioGroup.check(btnGas.getId());
                     gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
                 }
-                else if(checkedRadioButton == btnAnnouncements)
+                else if(checkedId == R.id.btn_announcements)
                 {
                     clearGUI();
+                    // uncheckButtons();
+                    //radioGroup.clearCheck();
+                    // radioGroup.check(btnAnnouncements.getId());
+                    viewPager.startAnimation(AlphaAnimationHolder.fadeInAnnouncements);
+                }
+            }
+        });
+    }*/
+
+    private void initFadeAnimations() {
+        AlphaAnimationHolder.fadeInElec.setDuration(1000);
+        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInWater.setDuration(1000);
+        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInTemp.setDuration(1000);
+        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInGas.setDuration(1000);
+        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot, radioGroup));
+
+        AlphaAnimationHolder.fadeInAnnouncements.setDuration(1000);
+        AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager, radioGroup));
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            View viewToAnimate;
+
+            public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
+
+                if (checkedId == R.id.btn_electricity) {
+                    viewToAnimate = findViewById(R.id.elecPlot);
+                    elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
+                } else if (checkedId == R.id.btn_water) {
+
+                    waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
+                } else if (checkedId == R.id.btn_temperature) {
+
+                    tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
+                } else if (checkedId == R.id.btn_gas) {
+                    clearGUI();
+                    //radioGroup.clearCheck();
+                    //radioGroup.check(btnGas.getId());
+                    gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
+                } else if (checkedId == R.id.btn_announcements) {
+
                     viewPager.startAnimation(AlphaAnimationHolder.fadeInAnnouncements);
                 }
             }
         });
     }
 
-    private void initAnnouncementLayout()
-    {
+    private void initAnnouncementLayout() {
         ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
         bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.one));
         bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.two));
@@ -207,45 +261,41 @@ public class MainActivity extends Activity {
         viewPager.setAdapter(imageAdapter);
         viewPager.setCurrentItem(position);
 
+
         // infinite view page http://stackoverflow.com/questions/7546224/viewpager-as-a-circular-queue-wrapping
 
-        viewPager.setOnPageChangeListener(new OnPageChangeListener()
-        {
+        viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
             @Override
-            public void onPageScrollStateChanged(int state)
-            {
+            public void onPageScrollStateChanged(int state) {
 
             }
 
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-            {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
             @Override
-            public void onPageSelected(int position)
-            {
+            public void onPageSelected(int position) {
                 imageAdapter.unzoomImageView();
             }
         });
 
     }
 
-    private void initElecGraphLayout()
-    {
+    private void initElecGraphLayout() {
         //Must get data and generate arrays.
-        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
         float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
-        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
+        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
 
         // initialize our XYPlot reference:
         elecPlot = (XYPlot) findViewById(R.id.elecPlot);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Electricity Usage Plot");
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Electricity Usage Plot");
 
         LineAndPointFormatter plotFormat = new LineAndPointFormatter();
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
@@ -284,23 +334,22 @@ public class MainActivity extends Activity {
 
         Paint lineFill = new Paint(); //Shade Format b
         lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0,40,50,250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
 
-    private void initTempGraphLayout()
-    {
+    private void initTempGraphLayout() {
         //Must get data and generate arrays.
-        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
         float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
-        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
+        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
 
         // initialize our XYPlot reference:
         tempPlot = (XYPlot) findViewById(R.id.tempPlot);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Temperature Plot");
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Temperature Plot");
 
         LineAndPointFormatter plotFormat = new LineAndPointFormatter();
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
@@ -339,22 +388,22 @@ public class MainActivity extends Activity {
 
         Paint lineFill = new Paint(); //Shade Format b
         lineFill.setAlpha(200);
-        lineFill.setShader(new LinearGradient(40,50,50,250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
+        lineFill.setShader(new LinearGradient(40, 50, 50, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
-    private void initWaterGraphLayout()
-    {
+
+    private void initWaterGraphLayout() {
         //Must get data and generate arrays.
-        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
         float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
-        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
+        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
 
         // initialize our XYPlot reference:
         waterPlot = (XYPlot) findViewById(R.id.waterPlot);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Water Usage Plot");
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Water Usage Plot");
 
         LineAndPointFormatter plotFormat = new LineAndPointFormatter();
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
@@ -393,23 +442,22 @@ public class MainActivity extends Activity {
 
         Paint lineFill = new Paint(); //Shade Format b
         lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0,0,0,250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
+        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
 
-    private void initGasGraphLayout()
-    {
+    private void initGasGraphLayout() {
         //Must get data and generate arrays.
-        float[] intreadings =  {46.5f,34f, 29.12f, 18.2f, 20.1512f,40.2f,90.51f,20.1f};
+        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
         float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5,34, 29.12, 18.2, 20.1512,40.2,90.51,20.1}; //Readings
-        Number[] time = {1425688873, 1425689873,1425694802,1425695702,1425696602,1425697502,1425698702,1425699602 }; //TimeStamp
+        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
+        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
 
         // initialize our XYPlot reference:
         gasPlot = (XYPlot) findViewById(R.id.gasPlot);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings),"Gas Usage Plot");
+        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Gas Usage Plot");
 
         LineAndPointFormatter plotFormat = new LineAndPointFormatter();
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
@@ -448,12 +496,11 @@ public class MainActivity extends Activity {
 
         Paint lineFill = new Paint(); //Shade Format b
         lineFill.setAlpha(255);
-        lineFill.setShader(new LinearGradient(0,40,50,250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
+        lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
     }
 
-    public void testDatabase(View view)
-    {
+    public void testDatabase(View view) {
         Log.d("", "Clicked");
     }
 
@@ -479,16 +526,64 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class ScreenTimerTask extends TimerTask
-    {
+    private void clearGUI() {
+
+
+        viewPager.clearAnimation();
+        viewPager.setAnimation(null);
+        //  viewPager.postDelayed(new Runnable() {
+        //     public void run() {
+        viewPager.setVisibility(View.GONE);
+        //    }
+        // }, 1000);
+        AlphaAnimationHolder.fadeInAnnouncements.cancel();
+
+        elecPlot.clearAnimation();
+        elecPlot.setAnimation(null);
+        //  elecPlot.postDelayed(new Runnable() {
+        //    public void run() {
+        elecPlot.setVisibility(View.GONE);
+        //    }
+        //  }, 1000);
+        AlphaAnimationHolder.fadeInElec.cancel();
+
+        waterPlot.clearAnimation();
+        waterPlot.setAnimation(null);
+        //   waterPlot.postDelayed(new Runnable() {
+        //     public void run() {
+        waterPlot.setVisibility(View.GONE);
+        //   }
+        //    }, 1000);
+        AlphaAnimationHolder.fadeInWater.cancel();
+
+        tempPlot.clearAnimation();
+        tempPlot.setAnimation(null);
+        //   tempPlot.postDelayed(new Runnable() {
+        //       public void run() {
+        tempPlot.setVisibility(View.GONE);
+        //      }
+        //   }, 1000);
+
+        AlphaAnimationHolder.fadeInTemp.cancel();
+
+        gasPlot.clearAnimation();
+        gasPlot.setAnimation(null);
+        //    gasPlot.postDelayed(new Runnable() {
+        //        public void run() {
+        gasPlot.setVisibility(View.GONE);
+        //       }
+        //    }, 1000);
+        AlphaAnimationHolder.fadeInGas.cancel();
+    }
+
+    private class ScreenTimerTask extends TimerTask {
         @Override
-        public void run()
-        {
+        public void run() {
             // start screen saver
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(moverTimer != null)
+                    if (moverTimer != null)
                         moverTimer.cancel();
                     moverTimer = new Timer();
                     moverTimerTask = new MoverTimerTask();
@@ -498,11 +593,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class MoverTimerTask extends TimerTask
-    {
+    private class MoverTimerTask extends TimerTask {
         @Override
-        public void run()
-        {
+        public void run() {
             // screen saver code
             runOnUiThread(new Runnable() {
                 @Override
@@ -512,83 +605,40 @@ public class MainActivity extends Activity {
 
                     Log.d("", announcementToScrollTo + "");
 
-                    if(ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS)
-                    {
+                    if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
                         // if scrolling to the first announcement, then the previous state was not announcements
-                        if(announcementToScrollTo == 0)
-                        {
-                            uncheckButtons();
+                        ;
+                        if (announcementToScrollTo == 0) {
+                            // uncheckButtons();
                             viewPager.setCurrentItem(0);
-                            btnAnnouncements.setChecked(true);
-                        }
-                        else
-                        {
+                            //  radioGroup.clearCheck();
+                            radioGroup.check(btnAnnouncements.getId());
+                        } else {
                             // no animation needed, just change page
                             viewPager.setCurrentItem(announcementToScrollTo);
                         }
-                    }
-                    else if(ScreenSaver.currentState.stateType == StateType.ELECTRICITY)
-                    {
-                        uncheckButtons();
-                        btnElectricity.setChecked(true);
-                    }
-                    else if(ScreenSaver.currentState.stateType == StateType.WATER)
-                    {
-                        uncheckButtons();
-                        btnWater.setChecked(true);
-                    }
-                    else if(ScreenSaver.currentState.stateType == StateType.TEMPERATURE)
-                    {
-                        uncheckButtons();
-                        btnTemperature.setChecked(true);
-                    }
-                    else if(ScreenSaver.currentState.stateType == StateType.GAS)
-                    {
-                        uncheckButtons();
-                        btnGas.setChecked(true);
+                    } else if (ScreenSaver.currentState.stateType == StateType.ELECTRICITY) {
+                        //uncheckButtons();
+                        // radioGroup.clearCheck();
+                        radioGroup.check(btnElectricity.getId());
+                    } else if (ScreenSaver.currentState.stateType == StateType.WATER) {
+                        // uncheckButtons();
+                        //radioGroup.clearCheck();
+                        radioGroup.check(btnWater.getId());
+                    } else if (ScreenSaver.currentState.stateType == StateType.TEMPERATURE) {
+                        // uncheckButtons();
+                        // radioGroup.clearCheck();
+                        radioGroup.check(btnTemperature.getId());
+                    } else if (ScreenSaver.currentState.stateType == StateType.GAS) {
+                        //uncheckButtons();
+                        // radioGroup.clearCheck();
+                        radioGroup.check(btnGas.getId());
                     }
 
 
                 }
-            } );
+            });
         }
     }
 
-    private void clearGUI()
-    {
-        viewPager.clearAnimation();
-        viewPager.setAnimation(null);
-        viewPager.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInAnnouncements.cancel();
-
-        elecPlot.clearAnimation();
-        elecPlot.setAnimation(null);
-        elecPlot.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInElec.cancel();
-
-        waterPlot.clearAnimation();
-        waterPlot.setAnimation(null);
-        waterPlot.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInWater.cancel();
-
-        tempPlot.clearAnimation();
-        tempPlot.setAnimation(null);
-        tempPlot.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInWater.cancel();
-
-        gasPlot.clearAnimation();
-        gasPlot.setAnimation(null);
-        gasPlot.setVisibility(View.GONE);
-        AlphaAnimationHolder.fadeInGas.cancel();
-
-    }
-
-    private void uncheckButtons()
-    {
-        // uncheck all buttons
-        for(int i = 0; i < radioGroup.getChildCount(); i++)
-        {
-            ((RadioButton) radioGroup.getChildAt(i)).setChecked(false);
-        }
-    }
 }
