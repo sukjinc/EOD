@@ -1,6 +1,7 @@
 package eod.uaa.main;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -134,111 +135,54 @@ public class MainActivity extends Activity {
         screenTimer.schedule(screenTimerTask, 5000);
     }
 
-    /*private void initFadeAnimations()
-    {
-        AlphaAnimationHolder.fadeInElec.setDuration(1000);
-        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot, radioGroup));
-
-        AlphaAnimationHolder.fadeInWater.setDuration(1000);
-        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot, radioGroup));
-
-        AlphaAnimationHolder.fadeInTemp.setDuration(1000);
-        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot, radioGroup));
-
-        AlphaAnimationHolder.fadeInGas.setDuration(1000);
-        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot, radioGroup));
-
-        AlphaAnimationHolder.fadeInAnnouncements.setDuration(1000);
-        AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager, radioGroup));
-
-
-
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            public void onCheckedChanged(RadioGroup rGroup, int checkedId)
-            {
-
-                if(checkedId == R.id.btn_electricity)
-                {
-                    clearGUI();
-                    //radioGroup.clearCheck();
-                    //radioGroup.check(btnElectricity.getId());
-                    elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
-                }
-                else if(checkedId == R.id.btn_water)
-                {
-                    clearGUI();
-                    // radioGroup.clearCheck();
-                    //radioGroup.check(btnWater.getId());
-                    waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
-                }
-                else if(checkedId == R.id.btn_temperature)
-                {
-                    clearGUI();
-                    // radioGroup.clearCheck();
-                    //radioGroup.check(btnTemperature.getId());
-                    tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
-                }
-                else if(checkedId == R.id.btn_gas)
-                {
-                    clearGUI();
-                    //radioGroup.clearCheck();
-                    //radioGroup.check(btnGas.getId());
-                    gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
-                }
-                else if(checkedId == R.id.btn_announcements)
-                {
-                    clearGUI();
-                    // uncheckButtons();
-                    //radioGroup.clearCheck();
-                    // radioGroup.check(btnAnnouncements.getId());
-                    viewPager.startAnimation(AlphaAnimationHolder.fadeInAnnouncements);
-                }
-            }
-        });
-    }*/
 
     private void initFadeAnimations() {
-        AlphaAnimationHolder.fadeInElec.setDuration(1000);
-        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot, radioGroup));
+        int fadeduration = 0;
+        AlphaAnimationHolder.fadeInElec.setDuration(fadeduration);
+        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot));
 
-        AlphaAnimationHolder.fadeInWater.setDuration(1000);
-        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot, radioGroup));
+        AlphaAnimationHolder.fadeInWater.setDuration(fadeduration);
+        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot));
 
-        AlphaAnimationHolder.fadeInTemp.setDuration(1000);
-        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot, radioGroup));
+        AlphaAnimationHolder.fadeInTemp.setDuration(fadeduration);
+        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot));
 
-        AlphaAnimationHolder.fadeInGas.setDuration(1000);
-        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot, radioGroup));
+        AlphaAnimationHolder.fadeInGas.setDuration(fadeduration);
+        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot));
 
-        AlphaAnimationHolder.fadeInAnnouncements.setDuration(1000);
-        AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager, radioGroup));
+        AlphaAnimationHolder.fadeInAnnouncements.setDuration(fadeduration);
+        AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager));
 
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             View viewToAnimate;
 
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
+                clearGUI();
 
                 if (checkedId == R.id.btn_electricity) {
-                    viewToAnimate = findViewById(R.id.elecPlot);
                     elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
                 } else if (checkedId == R.id.btn_water) {
-
                     waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
                 } else if (checkedId == R.id.btn_temperature) {
-
                     tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
                 } else if (checkedId == R.id.btn_gas) {
-                    clearGUI();
-                    //radioGroup.clearCheck();
-                    //radioGroup.check(btnGas.getId());
                     gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
                 } else if (checkedId == R.id.btn_announcements) {
-
                     viewPager.startAnimation(AlphaAnimationHolder.fadeInAnnouncements);
                 }
+
+                runOnUiThread(new Thread(new Runnable() {
+                    public void run() {
+                        viewPager.setVisibility(View.GONE);
+                        elecPlot.setVisibility(View.GONE);
+                        waterPlot.setVisibility(View.GONE);
+                        tempPlot.setVisibility(View.GONE);
+                        gasPlot.setVisibility(View.GONE);
+                    }
+                }));
+
+
             }
         });
     }
@@ -336,6 +280,12 @@ public class MainActivity extends Activity {
         lineFill.setAlpha(100);
         lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
+        //This gets rid of the black border (up to the graph) there is no black border around the labels
+        elecPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        elecPlot.getBackgroundPaint().setColor(Color.WHITE);
+
+
+
     }
 
     private void initTempGraphLayout() {
@@ -390,6 +340,8 @@ public class MainActivity extends Activity {
         lineFill.setAlpha(200);
         lineFill.setShader(new LinearGradient(40, 50, 50, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
+        tempPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        tempPlot.getBackgroundPaint().setColor(Color.WHITE);
     }
 
     private void initWaterGraphLayout() {
@@ -444,6 +396,8 @@ public class MainActivity extends Activity {
         lineFill.setAlpha(100);
         lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
+        waterPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        waterPlot.getBackgroundPaint().setColor(Color.WHITE);
     }
 
     private void initGasGraphLayout() {
@@ -498,6 +452,8 @@ public class MainActivity extends Activity {
         lineFill.setAlpha(255);
         lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
+        gasPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        gasPlot.getBackgroundPaint().setColor(Color.WHITE);
     }
 
     public void testDatabase(View view) {
@@ -531,49 +487,25 @@ public class MainActivity extends Activity {
 
         viewPager.clearAnimation();
         viewPager.setAnimation(null);
-        //  viewPager.postDelayed(new Runnable() {
-        //     public void run() {
-        viewPager.setVisibility(View.GONE);
-        //    }
-        // }, 1000);
         AlphaAnimationHolder.fadeInAnnouncements.cancel();
 
         elecPlot.clearAnimation();
         elecPlot.setAnimation(null);
-        //  elecPlot.postDelayed(new Runnable() {
-        //    public void run() {
-        elecPlot.setVisibility(View.GONE);
-        //    }
-        //  }, 1000);
         AlphaAnimationHolder.fadeInElec.cancel();
 
         waterPlot.clearAnimation();
         waterPlot.setAnimation(null);
-        //   waterPlot.postDelayed(new Runnable() {
-        //     public void run() {
-        waterPlot.setVisibility(View.GONE);
-        //   }
-        //    }, 1000);
         AlphaAnimationHolder.fadeInWater.cancel();
 
         tempPlot.clearAnimation();
         tempPlot.setAnimation(null);
-        //   tempPlot.postDelayed(new Runnable() {
-        //       public void run() {
-        tempPlot.setVisibility(View.GONE);
-        //      }
-        //   }, 1000);
-
         AlphaAnimationHolder.fadeInTemp.cancel();
 
         gasPlot.clearAnimation();
         gasPlot.setAnimation(null);
-        //    gasPlot.postDelayed(new Runnable() {
-        //        public void run() {
-        gasPlot.setVisibility(View.GONE);
-        //       }
-        //    }, 1000);
         AlphaAnimationHolder.fadeInGas.cancel();
+
+
     }
 
     private class ScreenTimerTask extends TimerTask {

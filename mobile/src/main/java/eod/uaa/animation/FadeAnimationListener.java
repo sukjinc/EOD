@@ -10,27 +10,21 @@ import android.widget.RadioGroup;
  */
 public class FadeAnimationListener implements AnimationListener {
     private View viewToFade;
-    private RadioGroup radioGroup;
-
-    public FadeAnimationListener(View viewToFade, RadioGroup radioGroup) {
+    public FadeAnimationListener(View viewToFade) {
         this.viewToFade = viewToFade;
-        this.radioGroup = radioGroup;
+
+
     }
 
     public void onAnimationStart(Animation arg0) {
-        // disable buttons while animation is starting
-        //radioGroup.clearCheck();
-        for (int i = 0; i < radioGroup.getChildCount(); i++) {
-            //((RadioButton)radioGroup.getChildAt(i)).setClickable(false);
-        }
+
     }
 
     public void onAnimationRepeat(Animation arg0) {
     }
 
     public void onAnimationEnd(Animation arg0) {
-        // turn buttons back on
-        // the actual animation
+
         viewToFade.setVisibility(View.VISIBLE);
 
     }

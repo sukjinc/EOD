@@ -1,3 +1,9 @@
+/**
+ * TouchImageView.java
+ * By: Rathod
+ * Multi touch pinch zoom & panning Image view
+ */
+
 package eod.uaa.announcement;
 
 import android.content.Context;
@@ -5,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -27,11 +34,13 @@ public class TouchImageView extends ImageView {
     float maxScale = 3f;
     float[] m;
 
+
     int viewWidth, viewHeight;
     static final int CLICK = 3;
     float saveScale = 1f;
     protected float origWidth, origHeight;
     int oldMeasuredWidth, oldMeasuredHeight;
+
 
     ScaleGestureDetector mScaleDetector;
 
@@ -74,10 +83,8 @@ public class TouchImageView extends ImageView {
                         if (mode == DRAG) {
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
-                            float fixTransX = getFixDragTrans(deltaX, viewWidth,
-                                    origWidth * saveScale);
-                            float fixTransY = getFixDragTrans(deltaY, viewHeight,
-                                    origHeight * saveScale);
+                            float fixTransX = getFixDragTrans(deltaX, viewWidth, origWidth * saveScale);
+                            float fixTransY = getFixDragTrans(deltaY, viewHeight, origHeight * saveScale);
                             matrix.postTranslate(fixTransX, fixTransY);
                             fixTrans();
                             last.set(curr.x, curr.y);
@@ -109,8 +116,7 @@ public class TouchImageView extends ImageView {
         maxScale = x;
     }
 
-    private class ScaleListener extends
-            ScaleGestureDetector.SimpleOnScaleGestureListener {
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             mode = ZOOM;
@@ -130,13 +136,10 @@ public class TouchImageView extends ImageView {
                 mScaleFactor = minScale / origScale;
             }
 
-            if (origWidth * saveScale <= viewWidth
-                    || origHeight * saveScale <= viewHeight)
-                matrix.postScale(mScaleFactor, mScaleFactor, viewWidth / 2,
-                        viewHeight / 2);
+            if (origWidth * saveScale <= viewWidth || origHeight * saveScale <= viewHeight)
+                matrix.postScale(mScaleFactor, mScaleFactor, viewWidth / 2, viewHeight / 2);
             else
-                matrix.postScale(mScaleFactor, mScaleFactor,
-                        detector.getFocusX(), detector.getFocusY());
+                matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
 
             fixTrans();
             return true;
@@ -149,8 +152,7 @@ public class TouchImageView extends ImageView {
         float transY = m[Matrix.MTRANS_Y];
 
         float fixTransX = getFixTrans(transX, viewWidth, origWidth * saveScale);
-        float fixTransY = getFixTrans(transY, viewHeight, origHeight
-                * saveScale);
+        float fixTransY = getFixTrans(transY, viewHeight, origHeight * saveScale);
 
         if (fixTransX != 0 || fixTransY != 0)
             matrix.postTranslate(fixTransX, fixTransY);
@@ -197,17 +199,16 @@ public class TouchImageView extends ImageView {
         oldMeasuredWidth = viewWidth;
 
         if (saveScale == 1) {
-            // Fit to screen.
+            //Fit to screen.
             float scale;
 
             Drawable drawable = getDrawable();
-            if (drawable == null || drawable.getIntrinsicWidth() == 0
-                    || drawable.getIntrinsicHeight() == 0)
+            if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
                 return;
             int bmWidth = drawable.getIntrinsicWidth();
             int bmHeight = drawable.getIntrinsicHeight();
 
-            //Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
+            Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
 
             float scaleX = (float) viewWidth / (float) bmWidth;
             float scaleY = (float) viewHeight / (float) bmHeight;
@@ -215,10 +216,8 @@ public class TouchImageView extends ImageView {
             matrix.setScale(scale, scale);
 
             // Center the image
-            float redundantYSpace = (float) viewHeight
-                    - (scale * (float) bmHeight);
-            float redundantXSpace = (float) viewWidth
-                    - (scale * (float) bmWidth);
+            float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
+            float redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
             redundantYSpace /= (float) 2;
             redundantXSpace /= (float) 2;
 
