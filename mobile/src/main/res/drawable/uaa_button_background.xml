@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/uaagold_primary" android:state_pressed="true" />
-    <item android:drawable="@color/uaagold_primary" android:state_focused="true" />
-    <item android:drawable="@color/uaagold_primary" android:state_checked="true" />
-    <item android:drawable="@color/uaagreen_primary" />
+    <item android:drawable="@drawable/button_clicked_gradient" android:state_pressed="true" />
+    <item android:drawable="@drawable/button_clicked_gradient" android:state_focused="true" />
+    <item android:drawable="@drawable/button_clicked_gradient" android:state_checked="true" />
+    <item android:drawable="@drawable/button_gradient" />
 </selector>

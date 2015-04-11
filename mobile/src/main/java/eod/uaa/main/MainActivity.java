@@ -1,7 +1,6 @@
 package eod.uaa.main;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,9 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ViewFlipper;
 
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
@@ -39,21 +38,18 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import eod.uaa.animation.AlphaAnimationHolder;
-import eod.uaa.animation.FadeAnimationListener;
+import eod.uaa.animation.SlideAnimation;
 import eod.uaa.announcement.ImageAdapter;
-import eod.uaa.announcement.InfinitePagerAdapter;
 import eod.uaa.graph.GraphHelper;
 import eod.uaa.state.ScreenSaver;
 import eod.uaa.state.StateType;
 
 public class MainActivity extends Activity {
 
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    viewEnum CurrentView = viewEnum.INTRO; //current view
     @SuppressWarnings("deprecation")
 
-    private ViewFlipper mViewFlipper;
 
     private RadioGroup radioGroup;
     private RadioButton btnIntroduction;
@@ -62,21 +58,17 @@ public class MainActivity extends Activity {
     private RadioButton btnGas;
     private RadioButton btnTemperature;
     private RadioButton btnAnnouncements;
-
     private ImageAdapter imageAdapter;
-    private InfinitePagerAdapter infinitePagerAdapter;
     private ViewPager viewPager;
-
+    private ImageView Introduction;
     private XYPlot elecPlot;
     private XYPlot waterPlot;
     private XYPlot tempPlot;
     private XYPlot gasPlot;
-
     private Timer screenTimer;
     private Timer moverTimer;
     private TimerTask screenTimerTask;
     private TimerTask moverTimerTask;
-
     private MainActivity activity;
 
     @Override
@@ -92,7 +84,7 @@ public class MainActivity extends Activity {
         btnGas = (RadioButton) findViewById(R.id.btn_gas);
         btnTemperature = (RadioButton) findViewById(R.id.btn_temperature);
         btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
-
+        initIntroduction();
         initAnnouncementLayout();
         initElecGraphLayout();
         initTempGraphLayout();
@@ -100,7 +92,7 @@ public class MainActivity extends Activity {
         initWaterGraphLayout();
         initFadeAnimations();
         initTimers();
-
+        Introduction.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.INVISIBLE);
         elecPlot.setVisibility(View.INVISIBLE);
         waterPlot.setVisibility(View.INVISIBLE);
@@ -119,7 +111,7 @@ public class MainActivity extends Activity {
             screenTimerTask.cancel();
 
         screenTimerTask = new ScreenTimerTask();
-        screenTimer.schedule(screenTimerTask, 5000);
+        screenTimer.schedule(screenTimerTask, 30000);
 
         if (moverTimer != null)
             moverTimer.cancel();
@@ -132,9 +124,9 @@ public class MainActivity extends Activity {
         moverTimerTask = new MoverTimerTask();
         screenTimer = new Timer();
 
-        screenTimer.schedule(screenTimerTask, 5000);
+        screenTimer.schedule(screenTimerTask, 30000);
     }
-
+/*
 
     private void initFadeAnimations() {
         int fadeduration = 0;
@@ -186,6 +178,114 @@ public class MainActivity extends Activity {
             }
         });
     }
+    */
+
+    private void initFadeAnimations() {
+        SlideAnimation slideAnimation = new SlideAnimation();
+        final SlideAnimation finalFadeAnimation = slideAnimation;
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
+
+
+                if (checkedId == R.id.btn_electricity) {
+                    finalFadeAnimation.slideFromTop(elecPlot);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else if (CurrentView == viewEnum.TEMPPLOT) {
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else {//announcement
+                        finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    CurrentView = viewEnum.ELECPLOT;
+
+                } else if (checkedId == R.id.btn_introduction) {
+                    finalFadeAnimation.slideFromTop(Introduction);
+                    if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else if (CurrentView == viewEnum.TEMPPLOT) {
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else {//announcement
+                        finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    CurrentView = viewEnum.INTRO;
+
+                } else if (checkedId == R.id.btn_water) {
+                    finalFadeAnimation.slideFromTop(waterPlot);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else if (CurrentView == viewEnum.TEMPPLOT) {
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else {//announcement
+                        finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    CurrentView = viewEnum.WATERPLOT;
+
+                } else if (checkedId == R.id.btn_temperature) {
+                    finalFadeAnimation.slideFromTop(tempPlot);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else {//announcement
+                        finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    CurrentView = viewEnum.TEMPPLOT;
+
+                } else if (checkedId == R.id.btn_gas) {
+                    finalFadeAnimation.slideFromTop(gasPlot);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.TEMPPLOT) {
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else {//announcement
+                        finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    CurrentView = viewEnum.GASPLOT;
+
+                } else if (checkedId == R.id.btn_announcements) {
+                    finalFadeAnimation.slideFromTop(viewPager);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else { //tempPlot
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    }
+                    CurrentView = viewEnum.VIEWPAGER;
+
+                }
+            }
+        });
+    }
+
+    private void initIntroduction() {
+        Introduction = (ImageView) findViewById(R.id.introduction);
+    }
 
     private void initAnnouncementLayout() {
         ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
@@ -200,7 +300,6 @@ public class MainActivity extends Activity {
         Intent i = getIntent();
         int position = i.getIntExtra("position", 0);
         imageAdapter = new ImageAdapter(MainActivity.this, bitmaps);
-        infinitePagerAdapter = new InfinitePagerAdapter(imageAdapter);
         //viewPager.setAdapter(infinitePagerAdapter);
         viewPager.setAdapter(imageAdapter);
         viewPager.setCurrentItem(position);
@@ -283,7 +382,6 @@ public class MainActivity extends Activity {
         //This gets rid of the black border (up to the graph) there is no black border around the labels
         elecPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
         elecPlot.getBackgroundPaint().setColor(Color.WHITE);
-
 
 
     }
@@ -482,7 +580,8 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearGUI() {
+
+    /*private void clearGUI() {
 
 
         viewPager.clearAnimation();
@@ -507,6 +606,16 @@ public class MainActivity extends Activity {
 
 
     }
+*/
+
+    private enum viewEnum {
+        INTRO,
+        ELECPLOT,
+        WATERPLOT,
+        TEMPPLOT,
+        GASPLOT,
+        VIEWPAGER
+    }
 
     private class ScreenTimerTask extends TimerTask {
         @Override
@@ -519,7 +628,7 @@ public class MainActivity extends Activity {
                         moverTimer.cancel();
                     moverTimer = new Timer();
                     moverTimerTask = new MoverTimerTask();
-                    moverTimer.schedule(moverTimerTask, 2000, 2000);
+                    moverTimer.schedule(moverTimerTask, 5000, 5000);
                 }
             });
         }
@@ -539,7 +648,7 @@ public class MainActivity extends Activity {
 
                     if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
                         // if scrolling to the first announcement, then the previous state was not announcements
-                        ;
+
                         if (announcementToScrollTo == 0) {
                             // uncheckButtons();
                             viewPager.setCurrentItem(0);
