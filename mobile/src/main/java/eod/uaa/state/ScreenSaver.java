@@ -1,7 +1,5 @@
 package eod.uaa.state;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 /**
@@ -24,7 +22,7 @@ public class ScreenSaver
 
             if(numberOfAnnouncements == -1) // error
                 return;
-
+            stateList.add(new State(StateType.INTRO));
             stateList.add(new State(StateType.ELECTRICITY));
             stateList.add(new State(StateType.WATER));
             stateList.add(new State(StateType.TEMPERATURE));
@@ -65,14 +63,5 @@ public class ScreenSaver
                 currentAnnouncement = -1;
         }
 
-        // logging
-        if(currentState.stateType == StateType.ANNOUNCEMENTS)
-        {
-            Log.d("", "ann");
-        }
-        else if(currentState.stateType == StateType.ELECTRICITY)
-        {
-            Log.d("", "elec");
-        }
     }
 }

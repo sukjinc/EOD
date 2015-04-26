@@ -11,6 +11,7 @@ public class SlideAnimation {
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.VISIBLE);
+        view.bringToFront();
     }
 
     // To animate view slide out from view to bottom
@@ -19,7 +20,16 @@ public class SlideAnimation {
         animate.setDuration(700);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.INVISIBLE);
+        view.setVisibility(View.GONE);
+
+    }
+
+    public void pagerSlideToBottom(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, 0, 0, view.getHeight());
+        animate.setDuration(700);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.GONE);
     }
 }
 

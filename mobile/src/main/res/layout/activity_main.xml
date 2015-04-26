@@ -23,30 +23,75 @@
                 android:layout_height="fill_parent"
                 android:background="#000000"/>
 
-            <com.androidplot.xy.XYPlot
-            android:id="@+id/elecPlot"
-            androidPlot.domainLabel="Time"
-                androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
-            androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
-                androidPlot.graphWidget.backgroundPaint.color="WHITE"
-                androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-            androidPlot.graphWidget.marginBottom="30dp"
-                androidPlot.graphWidget.marginLeft="30dp"
-            androidPlot.graphWidget.marginRight="20dp"
-                androidPlot.graphWidget.marginTop="30dp"
-            androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
-            androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
-                androidPlot.rangeLabel="Electricity Usage (kW)"
-                androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
-                androidPlot.title="Electric Usage VS Time"
-                androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+            <LinearLayout
+                android:id="@+id/elecLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/uaagreen_primary" />
+                android:orientation="horizontal">
 
+                <com.androidplot.xy.XYPlot
+                    android:id="@+id/elecUsagePlot"
+                    androidPlot.domainLabel="Time"
+                    androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+                    androidPlot.graphWidget.backgroundPaint.color="WHITE"
+                    androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.marginBottom="60dp"
+                    androidPlot.graphWidget.marginLeft="60dp"
+                    androidPlot.graphWidget.marginRight="60dp"
+                    androidPlot.graphWidget.marginTop="60dp"
+                    androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.rangeLabel="Electricity Usage (kW)"
+                    androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+                    androidPlot.title="Electric Usage VS Time"
+                    androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                    android:layout_width="1100dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/uaagreen_primary" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:text="Electricity Usage"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp" />
+                    <Button
+                        android:text="Electricity Demand"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp" />
+                    <Button
+                        android:text="Yearly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Monthly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Weekly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Daily"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/waterLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
             <com.androidplot.xy.XYPlot
                 android:id="@+id/waterPlot"
                 androidPlot.domainLabel="Time"
@@ -55,10 +100,10 @@
                 androidPlot.graphWidget.backgroundPaint.color="WHITE"
                 androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
                 androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.marginBottom="30dp"
-                androidPlot.graphWidget.marginLeft="30dp"
-                androidPlot.graphWidget.marginRight="20dp"
-                androidPlot.graphWidget.marginTop="30dp"
+                androidPlot.graphWidget.marginBottom="60dp"
+                androidPlot.graphWidget.marginLeft="60dp"
+                androidPlot.graphWidget.marginRight="60dp"
+                androidPlot.graphWidget.marginTop="60dp"
                 androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
                 androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
                 androidPlot.rangeLabel="Water Usage (Gallons)"
@@ -67,65 +112,156 @@
                 androidPlot.title="Water Usage VS Time"
                 androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
                 androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
-                android:layout_width="fill_parent"
+                android:layout_width="1100dp"
                 android:layout_height="fill_parent"
                 android:background="@color/uaagreen_primary" />
 
-            <com.androidplot.xy.XYPlot
-                android:id="@+id/tempPlot"
-                androidPlot.domainLabel="Time"
-                androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
-                androidPlot.graphWidget.backgroundPaint.color="WHITE"
-                androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.marginBottom="30dp"
-                androidPlot.graphWidget.marginLeft="30dp"
-                androidPlot.graphWidget.marginRight="20dp"
-                androidPlot.graphWidget.marginTop="30dp"
-                androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
-                androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
-                androidPlot.rangeLabel="Temperature (Fahrenheit)"
-                androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
-                androidPlot.title="Temperature VS Time"
-                androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/uaagreen_primary" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <com.androidplot.xy.XYPlot
-                android:id="@+id/gasPlot"
-                androidPlot.domainLabel="Time"
-                androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
-                androidPlot.graphWidget.backgroundPaint.color="WHITE"
-                androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
-                androidPlot.graphWidget.marginBottom="30dp"
-                androidPlot.graphWidget.marginLeft="30dp"
-                androidPlot.graphWidget.marginRight="20dp"
-                androidPlot.graphWidget.marginTop="30dp"
-                androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
-                androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
-                androidPlot.rangeLabel="Gas Usage (kW)"
-                androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
-                androidPlot.title="Electric Usage VS Time"
-                androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
-                androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                    <Button
+                        android:text="Yearly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Monthly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Weekly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Daily"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tempLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/uaagreen_primary" />
+                android:orientation="horizontal">
+
+                <com.androidplot.xy.XYPlot
+                    android:id="@+id/tempPlot"
+                    androidPlot.domainLabel="Time"
+                    androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+                    androidPlot.graphWidget.backgroundPaint.color="WHITE"
+                    androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.marginBottom="60dp"
+                    androidPlot.graphWidget.marginLeft="60dp"
+                    androidPlot.graphWidget.marginRight="60dp"
+                    androidPlot.graphWidget.marginTop="60dp"
+                    androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.rangeLabel="Temperature (Fahrenheit)"
+                    androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+                    androidPlot.title="Temperature VS Time"
+                    androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                    android:layout_width="1100dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/uaagreen_primary" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:text="Yearly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Monthly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Weekly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Daily"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gasLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <com.androidplot.xy.XYPlot
+                    android:id="@+id/gasPlot"
+                    androidPlot.domainLabel="Time"
+                    androidPlot.domainLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+                    androidPlot.graphWidget.backgroundPaint.color="WHITE"
+                    androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                    androidPlot.graphWidget.marginBottom="60dp"
+                    androidPlot.graphWidget.marginLeft="60dp"
+                    androidPlot.graphWidget.marginRight="60dp"
+                    androidPlot.graphWidget.marginTop="60dp"
+                    androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                    androidPlot.rangeLabel="Gas Usage (kW)"
+                    androidPlot.rangeLabelWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+                    androidPlot.title="Electric Usage VS Time"
+                    androidPlot.titleWidget.labelPaint.color="@color/uaagreen_primary"
+                    androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                    android:layout_width="1100dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/uaagreen_primary" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:text="Yearly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Monthly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Weekly"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+                    <Button
+                        android:text="Daily"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/introduction"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/uaagreen_primary"
+                android:background="@color/white"
                 android:scaleType="center"
-                android:src="@raw/new_eng" />
+                android:src="@raw/intro" />
 
         </FrameLayout>
 

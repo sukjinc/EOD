@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -61,7 +62,11 @@ public class MainActivity extends Activity {
     private ImageAdapter imageAdapter;
     private ViewPager viewPager;
     private ImageView Introduction;
-    private XYPlot elecPlot;
+    private LinearLayout elecLayout;
+    private LinearLayout tempLayout;
+    private LinearLayout waterLayout;
+    private LinearLayout gasLayout;
+    private XYPlot elecUsagePlot;
     private XYPlot waterPlot;
     private XYPlot tempPlot;
     private XYPlot gasPlot;
@@ -84,20 +89,29 @@ public class MainActivity extends Activity {
         btnGas = (RadioButton) findViewById(R.id.btn_gas);
         btnTemperature = (RadioButton) findViewById(R.id.btn_temperature);
         btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
+        layoutInit();
+        initFadeAnimations();
+        initTimers();
+
+        Introduction.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.INVISIBLE);
+        elecLayout.setVisibility(View.INVISIBLE);
+        waterLayout.setVisibility(View.INVISIBLE);
+        tempLayout.setVisibility(View.INVISIBLE);
+        gasLayout.setVisibility(View.INVISIBLE);
+
+    }
+    public void layoutInit(){
+        elecLayout = (LinearLayout) findViewById(R.id.elecLayout);
+        tempLayout = (LinearLayout) findViewById(R.id.tempLayout);
+        waterLayout = (LinearLayout) findViewById(R.id.waterLayout);
+        gasLayout = (LinearLayout) findViewById(R.id.gasLayout);
         initIntroduction();
         initAnnouncementLayout();
         initElecGraphLayout();
         initTempGraphLayout();
         initGasGraphLayout();
         initWaterGraphLayout();
-        initFadeAnimations();
-        initTimers();
-        Introduction.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.INVISIBLE);
-        elecPlot.setVisibility(View.INVISIBLE);
-        waterPlot.setVisibility(View.INVISIBLE);
-        tempPlot.setVisibility(View.INVISIBLE);
-        gasPlot.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -123,62 +137,9 @@ public class MainActivity extends Activity {
         screenTimerTask = new ScreenTimerTask();
         moverTimerTask = new MoverTimerTask();
         screenTimer = new Timer();
-
         screenTimer.schedule(screenTimerTask, 30000);
     }
-/*
 
-    private void initFadeAnimations() {
-        int fadeduration = 0;
-        AlphaAnimationHolder.fadeInElec.setDuration(fadeduration);
-        AlphaAnimationHolder.fadeInElec.setAnimationListener(new FadeAnimationListener(elecPlot));
-
-        AlphaAnimationHolder.fadeInWater.setDuration(fadeduration);
-        AlphaAnimationHolder.fadeInWater.setAnimationListener(new FadeAnimationListener(waterPlot));
-
-        AlphaAnimationHolder.fadeInTemp.setDuration(fadeduration);
-        AlphaAnimationHolder.fadeInTemp.setAnimationListener(new FadeAnimationListener(tempPlot));
-
-        AlphaAnimationHolder.fadeInGas.setDuration(fadeduration);
-        AlphaAnimationHolder.fadeInGas.setAnimationListener(new FadeAnimationListener(gasPlot));
-
-        AlphaAnimationHolder.fadeInAnnouncements.setDuration(fadeduration);
-        AlphaAnimationHolder.fadeInAnnouncements.setAnimationListener(new FadeAnimationListener(viewPager));
-
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            View viewToAnimate;
-
-            public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
-                clearGUI();
-
-                if (checkedId == R.id.btn_electricity) {
-                    elecPlot.startAnimation(AlphaAnimationHolder.fadeInElec);
-                } else if (checkedId == R.id.btn_water) {
-                    waterPlot.startAnimation(AlphaAnimationHolder.fadeInWater);
-                } else if (checkedId == R.id.btn_temperature) {
-                    tempPlot.startAnimation(AlphaAnimationHolder.fadeInTemp);
-                } else if (checkedId == R.id.btn_gas) {
-                    gasPlot.startAnimation(AlphaAnimationHolder.fadeInGas);
-                } else if (checkedId == R.id.btn_announcements) {
-                    viewPager.startAnimation(AlphaAnimationHolder.fadeInAnnouncements);
-                }
-
-                runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        viewPager.setVisibility(View.GONE);
-                        elecPlot.setVisibility(View.GONE);
-                        waterPlot.setVisibility(View.GONE);
-                        tempPlot.setVisibility(View.GONE);
-                        gasPlot.setVisibility(View.GONE);
-                    }
-                }));
-
-
-            }
-        });
-    }
-    */
 
     private void initFadeAnimations() {
         SlideAnimation slideAnimation = new SlideAnimation();
@@ -186,95 +147,95 @@ public class MainActivity extends Activity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
-
+                Log.d("listener","caleedlister");
 
                 if (checkedId == R.id.btn_electricity) {
-                    finalFadeAnimation.slideFromTop(elecPlot);
+                    finalFadeAnimation.slideFromTop(elecLayout);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.WATERPLOT) {
-                        finalFadeAnimation.slideToBottom(waterPlot);
-                    } else if (CurrentView == viewEnum.GASPLOT) {
-                        finalFadeAnimation.slideToBottom(gasPlot);
-                    } else if (CurrentView == viewEnum.TEMPPLOT) {
-                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
+                        finalFadeAnimation.slideToBottom(waterLayout);
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                        finalFadeAnimation.slideToBottom(gasLayout);
+                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
+                        finalFadeAnimation.slideToBottom(tempLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
-                    CurrentView = viewEnum.ELECPLOT;
+                    CurrentView = viewEnum.ELECLAYOUT;
 
                 } else if (checkedId == R.id.btn_introduction) {
                     finalFadeAnimation.slideFromTop(Introduction);
-                    if (CurrentView == viewEnum.ELECPLOT) {
-                        finalFadeAnimation.slideToBottom(elecPlot);
-                    } else if (CurrentView == viewEnum.WATERPLOT) {
-                        finalFadeAnimation.slideToBottom(waterPlot);
-                    } else if (CurrentView == viewEnum.GASPLOT) {
-                        finalFadeAnimation.slideToBottom(gasPlot);
-                    } else if (CurrentView == viewEnum.TEMPPLOT) {
-                        finalFadeAnimation.slideToBottom(tempPlot);
+                    if (CurrentView == viewEnum.ELECLAYOUT) {
+                        finalFadeAnimation.slideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
+                        finalFadeAnimation.slideToBottom(waterLayout);
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                        finalFadeAnimation.slideToBottom(gasLayout);
+                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
+                        finalFadeAnimation.slideToBottom(tempLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
                     CurrentView = viewEnum.INTRO;
 
                 } else if (checkedId == R.id.btn_water) {
-                    finalFadeAnimation.slideFromTop(waterPlot);
+                    finalFadeAnimation.slideFromTop(waterLayout);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.ELECPLOT) {
-                        finalFadeAnimation.slideToBottom(elecPlot);
-                    } else if (CurrentView == viewEnum.GASPLOT) {
-                        finalFadeAnimation.slideToBottom(gasPlot);
-                    } else if (CurrentView == viewEnum.TEMPPLOT) {
-                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
+                        finalFadeAnimation.slideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                        finalFadeAnimation.slideToBottom(gasLayout);
+                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
+                        finalFadeAnimation.slideToBottom(tempLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
-                    CurrentView = viewEnum.WATERPLOT;
+                    CurrentView = viewEnum.WATERLAYOUT;
 
                 } else if (checkedId == R.id.btn_temperature) {
-                    finalFadeAnimation.slideFromTop(tempPlot);
+                    finalFadeAnimation.slideFromTop(tempLayout);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.ELECPLOT) {
-                        finalFadeAnimation.slideToBottom(elecPlot);
-                    } else if (CurrentView == viewEnum.WATERPLOT) {
-                        finalFadeAnimation.slideToBottom(waterPlot);
-                    } else if (CurrentView == viewEnum.GASPLOT) {
-                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
+                        finalFadeAnimation.slideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
+                        finalFadeAnimation.slideToBottom(waterLayout);
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                        finalFadeAnimation.slideToBottom(gasLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
-                    CurrentView = viewEnum.TEMPPLOT;
+                    CurrentView = viewEnum.TEMPLAYOUT;
 
                 } else if (checkedId == R.id.btn_gas) {
-                    finalFadeAnimation.slideFromTop(gasPlot);
+                    finalFadeAnimation.slideFromTop(gasLayout);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.ELECPLOT) {
-                        finalFadeAnimation.slideToBottom(elecPlot);
-                    } else if (CurrentView == viewEnum.WATERPLOT) {
-                        finalFadeAnimation.slideToBottom(waterPlot);
-                    } else if (CurrentView == viewEnum.TEMPPLOT) {
-                        finalFadeAnimation.slideToBottom(tempPlot);
+                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
+                        finalFadeAnimation.slideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
+                        finalFadeAnimation.slideToBottom(waterLayout);
+                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
+                        finalFadeAnimation.slideToBottom(tempLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
-                    CurrentView = viewEnum.GASPLOT;
+                    CurrentView = viewEnum.GASLAYOUT;
 
                 } else if (checkedId == R.id.btn_announcements) {
                     finalFadeAnimation.slideFromTop(viewPager);
                     if (CurrentView == viewEnum.INTRO) {
-                        finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.ELECPLOT) {
-                        finalFadeAnimation.slideToBottom(elecPlot);
-                    } else if (CurrentView == viewEnum.WATERPLOT) {
-                        finalFadeAnimation.slideToBottom(waterPlot);
-                    } else if (CurrentView == viewEnum.GASPLOT) {
-                        finalFadeAnimation.slideToBottom(gasPlot);
+                        finalFadeAnimation.pagerSlideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
+                        finalFadeAnimation.pagerSlideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
+                        finalFadeAnimation.pagerSlideToBottom(waterLayout);
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                        finalFadeAnimation.pagerSlideToBottom(gasLayout);
                     } else { //tempPlot
-                        finalFadeAnimation.slideToBottom(tempPlot);
+                        finalFadeAnimation.pagerSlideToBottom(tempLayout);
                     }
                     CurrentView = viewEnum.VIEWPAGER;
 
@@ -328,6 +289,8 @@ public class MainActivity extends Activity {
     }
 
     private void initElecGraphLayout() {
+
+
         //Must get data and generate arrays.
         float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
@@ -336,7 +299,7 @@ public class MainActivity extends Activity {
         Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
 
         // initialize our XYPlot reference:
-        elecPlot = (XYPlot) findViewById(R.id.elecPlot);
+        elecUsagePlot = (XYPlot) findViewById(R.id.elecUsagePlot);
 
         XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Electricity Usage Plot");
 
@@ -344,13 +307,13 @@ public class MainActivity extends Activity {
         plotFormat.setPointLabelFormatter(new PointLabelFormatter());
         plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_elec);
 
-        elecPlot.getLegendWidget().setWidth(0); //Disable Legend
+        elecUsagePlot.getLegendWidget().setWidth(0); //Disable Legend
         //------- Range Domain Format -----
-        elecPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+        elecUsagePlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
 
-        elecPlot.addSeries(myPlot, plotFormat);
-        elecPlot.setRangeValueFormat(new DecimalFormat("0"));
-        elecPlot.setDomainValueFormat(new Format() {
+        elecUsagePlot.addSeries(myPlot, plotFormat);
+        elecUsagePlot.setRangeValueFormat(new DecimalFormat("0"));
+        elecUsagePlot.setDomainValueFormat(new Format() {
             // create a simple date format that draws on the year portion of our timestamp.
             // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
             // for a full description of SimpleDateFormat.
@@ -376,18 +339,19 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(100);
-        lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+        lineFill.setAlpha(180);
+        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
         //This gets rid of the black border (up to the graph) there is no black border around the labels
-        elecPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        elecPlot.getBackgroundPaint().setColor(Color.WHITE);
+        elecUsagePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        elecUsagePlot.getBackgroundPaint().setColor(Color.WHITE);
 
 
     }
 
     private void initTempGraphLayout() {
         //Must get data and generate arrays.
+
         float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
         float min = GraphHelper.getMin(intreadings);
         float max = GraphHelper.getMax(intreadings);
@@ -435,8 +399,8 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(200);
-        lineFill.setShader(new LinearGradient(40, 50, 50, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
+        lineFill.setAlpha(180);
+        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
         tempPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
         tempPlot.getBackgroundPaint().setColor(Color.WHITE);
@@ -491,7 +455,7 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(100);
+        lineFill.setAlpha(180);
         lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
         waterPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
@@ -547,15 +511,15 @@ public class MainActivity extends Activity {
 
 
         Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(255);
-        lineFill.setShader(new LinearGradient(0, 40, 50, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
+        lineFill.setAlpha(180);
+        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
         plotFormat.setFillPaint(lineFill);
         gasPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
         gasPlot.getBackgroundPaint().setColor(Color.WHITE);
     }
 
     public void testDatabase(View view) {
-        Log.d("", "Clicked");
+
     }
 
     @Override
@@ -581,39 +545,13 @@ public class MainActivity extends Activity {
     }
 
 
-    /*private void clearGUI() {
-
-
-        viewPager.clearAnimation();
-        viewPager.setAnimation(null);
-        AlphaAnimationHolder.fadeInAnnouncements.cancel();
-
-        elecPlot.clearAnimation();
-        elecPlot.setAnimation(null);
-        AlphaAnimationHolder.fadeInElec.cancel();
-
-        waterPlot.clearAnimation();
-        waterPlot.setAnimation(null);
-        AlphaAnimationHolder.fadeInWater.cancel();
-
-        tempPlot.clearAnimation();
-        tempPlot.setAnimation(null);
-        AlphaAnimationHolder.fadeInTemp.cancel();
-
-        gasPlot.clearAnimation();
-        gasPlot.setAnimation(null);
-        AlphaAnimationHolder.fadeInGas.cancel();
-
-
-    }
-*/
 
     private enum viewEnum {
         INTRO,
-        ELECPLOT,
-        WATERPLOT,
-        TEMPPLOT,
-        GASPLOT,
+        ELECLAYOUT,
+        WATERLAYOUT,
+        TEMPLAYOUT,
+        GASLAYOUT,
         VIEWPAGER
     }
 
@@ -644,35 +582,26 @@ public class MainActivity extends Activity {
                     ScreenSaver.changeState();
                     int announcementToScrollTo = ScreenSaver.currentAnnouncement;
 
-                    Log.d("", announcementToScrollTo + "");
 
                     if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
-                        // if scrolling to the first announcement, then the previous state was not announcements
-
                         if (announcementToScrollTo == 0) {
-                            // uncheckButtons();
                             viewPager.setCurrentItem(0);
-                            //  radioGroup.clearCheck();
                             radioGroup.check(btnAnnouncements.getId());
                         } else {
                             // no animation needed, just change page
+                            radioGroup.check(btnAnnouncements.getId());
                             viewPager.setCurrentItem(announcementToScrollTo);
+
                         }
                     } else if (ScreenSaver.currentState.stateType == StateType.ELECTRICITY) {
-                        //uncheckButtons();
-                        // radioGroup.clearCheck();
                         radioGroup.check(btnElectricity.getId());
+                    } else if (ScreenSaver.currentState.stateType == StateType.INTRO) {
+                        radioGroup.check(btnIntroduction.getId());
                     } else if (ScreenSaver.currentState.stateType == StateType.WATER) {
-                        // uncheckButtons();
-                        //radioGroup.clearCheck();
                         radioGroup.check(btnWater.getId());
                     } else if (ScreenSaver.currentState.stateType == StateType.TEMPERATURE) {
-                        // uncheckButtons();
-                        // radioGroup.clearCheck();
                         radioGroup.check(btnTemperature.getId());
                     } else if (ScreenSaver.currentState.stateType == StateType.GAS) {
-                        //uncheckButtons();
-                        // radioGroup.clearCheck();
                         radioGroup.check(btnGas.getId());
                     }
 
