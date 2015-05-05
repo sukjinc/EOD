@@ -1,5 +1,6 @@
 package eod.uaa.database;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -14,9 +15,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class JSONfunctions {
+public class JSONfunctions extends AsyncTask<String, Void, String> {
 
-    public static JSONObject getJSONfromURL(String url) {
+    public static JSONObject getJSONfromURL(String url)  {
         InputStream is = null;
         String result = "";
         JSONObject jArray = null;
@@ -56,5 +57,10 @@ public class JSONfunctions {
         }
 
         return jArray;
+    }
+
+    @Override
+    protected String doInBackground(String... params) {
+        return null;
     }
 }

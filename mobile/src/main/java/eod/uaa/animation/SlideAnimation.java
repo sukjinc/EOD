@@ -3,15 +3,22 @@ package eod.uaa.animation;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 
+
 public class SlideAnimation {
+
+
     // To animate view slide in from top to view
     public void slideFromTop(View view) {
+
         TranslateAnimation animate = new TranslateAnimation(0, 0, -view.getWidth(), 0);
         animate.setDuration(700);
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.VISIBLE);
         view.bringToFront();
+        view.setEnabled(true);
+
+
     }
 
     // To animate view slide out from view to bottom
@@ -21,16 +28,38 @@ public class SlideAnimation {
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.GONE);
+        view.destroyDrawingCache();
+        view.setEnabled(false);
+        view.destroyDrawingCache();
+
 
     }
+/*
 
-    public void pagerSlideToBottom(View view) {
+    public void pagerSlideToBottom(ViewPager view) {
         TranslateAnimation animate = new TranslateAnimation(0, 0, 0, view.getHeight());
         animate.setDuration(700);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.GONE);
+        view.setVisibility(ViewPager.GONE);
+        view.setEnabled(false);
+        view.destroyDrawingCache();
     }
+
+
+    public void imageSlideToBottom(ImageView view) {
+        TranslateAnimation animate = new TranslateAnimation(0, 0, 0, view.getHeight());
+        animate.setDuration(700);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(ImageView.GONE);
+        view.setEnabled(false);
+        view.destroyDrawingCache();
+        MainActivity.viewDestroyer(view);
+    }
+*/
+
+
 }
 
 /*
@@ -62,3 +91,11 @@ public class FadeAnimationListener implements AnimationListener {
     }
 }
 */
+
+//if(e == viewEnum.VIEWPAGER){
+//
+//        if(view != null)
+//        if(view.getParent() != null)
+//        ((ViewGroup) view.getParent()).removeView(view);
+//
+//        }

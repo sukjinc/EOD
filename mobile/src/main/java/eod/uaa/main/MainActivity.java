@@ -11,10 +11,8 @@ import android.graphics.Shader;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,17 +39,14 @@ import java.util.TimerTask;
 
 import eod.uaa.animation.SlideAnimation;
 import eod.uaa.announcement.ImageAdapter;
-import eod.uaa.graph.GraphHelper;
 import eod.uaa.state.ScreenSaver;
-import eod.uaa.state.StateType;
 
 public class MainActivity extends Activity {
-
-
-    viewEnum CurrentView = viewEnum.INTRO; //current view
-    @SuppressWarnings("deprecation")
-
-
+    public ViewPager viewPager;
+    public ImageView Introduction;
+    public LinearLayout oneLayout;
+    public XYPlot onePlot;
+    viewEnum CurrentView = viewEnum.INTRO;
     private RadioGroup radioGroup;
     private RadioButton btnIntroduction;
     private RadioButton btnElectricity;
@@ -60,16 +55,6 @@ public class MainActivity extends Activity {
     private RadioButton btnTemperature;
     private RadioButton btnAnnouncements;
     private ImageAdapter imageAdapter;
-    private ViewPager viewPager;
-    private ImageView Introduction;
-    private LinearLayout elecLayout;
-    private LinearLayout tempLayout;
-    private LinearLayout waterLayout;
-    private LinearLayout gasLayout;
-    private XYPlot elecUsagePlot;
-    private XYPlot waterPlot;
-    private XYPlot tempPlot;
-    private XYPlot gasPlot;
     private Timer screenTimer;
     private Timer moverTimer;
     private TimerTask screenTimerTask;
@@ -77,6 +62,7 @@ public class MainActivity extends Activity {
     private MainActivity activity;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
         super.onCreate(savedInstanceState);
@@ -89,56 +75,52 @@ public class MainActivity extends Activity {
         btnGas = (RadioButton) findViewById(R.id.btn_gas);
         btnTemperature = (RadioButton) findViewById(R.id.btn_temperature);
         btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
-        layoutInit();
+        btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
+
+        Introduction = (ImageView) findViewById(R.id.introduction);
+        oneLayout = (LinearLayout) findViewById(R.id.oneLayout);
+        onePlot = (XYPlot) findViewById(R.id.tempPlot);
         initFadeAnimations();
-        initTimers();
 
-        Introduction.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.INVISIBLE);
-        elecLayout.setVisibility(View.INVISIBLE);
-        waterLayout.setVisibility(View.INVISIBLE);
-        tempLayout.setVisibility(View.INVISIBLE);
-        gasLayout.setVisibility(View.INVISIBLE);
+//
+//        JSONObject Edemand;
+//        Edemand = JSONfunctions.getJSONfromURL("http://cannxs.org/eod/queries/ElectricityDemand.php");
+//        JSONObject Eusage;
+//        Eusage = JSONfunctions.getJSONfromURL("http://cannxs.org/eod/queries/ElectricityUsage.php");
+//        JSONObject Gconsumption;
+//        Gconsumption = JSONfunctions.getJSONfromURL("http://cannxs.org/eod/queries/GasConsumption.php");
+//        JSONObject Wusage;
+//        Wusage = JSONfunctions.getJSONfromURL("http://cannxs.org/eod/queries/WaterUsage.php");
+//        JSONObject Otemperature;
+//        Otemperature = JSONfunctions.getJSONfromURL("http://cannxs.org/eod/queries/OutsideTemperature.php");
 
     }
-    public void layoutInit(){
-        elecLayout = (LinearLayout) findViewById(R.id.elecLayout);
-        tempLayout = (LinearLayout) findViewById(R.id.tempLayout);
-        waterLayout = (LinearLayout) findViewById(R.id.waterLayout);
-        gasLayout = (LinearLayout) findViewById(R.id.gasLayout);
-        initIntroduction();
-        initAnnouncementLayout();
-        initElecGraphLayout();
-        initTempGraphLayout();
-        initGasGraphLayout();
-        initWaterGraphLayout();
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        super.dispatchTouchEvent(ev);
-
-        if (screenTimer != null)
-            screenTimer.cancel();
-        screenTimer = new Timer();
-        if (screenTimerTask != null)
-            screenTimerTask.cancel();
-
-        screenTimerTask = new ScreenTimerTask();
-        screenTimer.schedule(screenTimerTask, 30000);
-
-        if (moverTimer != null)
-            moverTimer.cancel();
-
-        return true;
-    }
-
-    private void initTimers() {
-        screenTimerTask = new ScreenTimerTask();
-        moverTimerTask = new MoverTimerTask();
-        screenTimer = new Timer();
-        screenTimer.schedule(screenTimerTask, 30000);
-    }
+//
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        super.dispatchTouchEvent(ev);
+//
+//        if (screenTimer != null)
+//            screenTimer.cancel();
+//        screenTimer = new Timer();
+//        if (screenTimerTask != null)
+//            screenTimerTask.cancel();
+//
+//        screenTimerTask = new ScreenTimerTask();
+//        screenTimer.schedule(screenTimerTask, 30000);
+//
+//        if (moverTimer != null)
+//            moverTimer.cancel();
+//
+//        return true;
+//    }
+//
+//    private void initTimers() {
+//        screenTimerTask = new ScreenTimerTask();
+//        moverTimerTask = new MoverTimerTask();
+//        screenTimer = new Timer();
+//        screenTimer.schedule(screenTimerTask, 30000);
+//    }
 
 
     private void initFadeAnimations() {
@@ -147,114 +129,136 @@ public class MainActivity extends Activity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
-                Log.d("listener","caleedlister");
 
-                if (checkedId == R.id.btn_electricity) {
-                    finalFadeAnimation.slideFromTop(elecLayout);
-                    if (CurrentView == viewEnum.INTRO) {
-                        finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
-                        finalFadeAnimation.slideToBottom(waterLayout);
-                    } else if (CurrentView == viewEnum.GASLAYOUT) {
-                        finalFadeAnimation.slideToBottom(gasLayout);
-                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
-                        finalFadeAnimation.slideToBottom(tempLayout);
-                    } else {//announcement
-                        finalFadeAnimation.slideToBottom(viewPager);
-                    }
-                    CurrentView = viewEnum.ELECLAYOUT;
-
-                } else if (checkedId == R.id.btn_introduction) {
+                if (checkedId == R.id.btn_introduction) {
                     finalFadeAnimation.slideFromTop(Introduction);
                     if (CurrentView == viewEnum.ELECLAYOUT) {
-                        finalFadeAnimation.slideToBottom(elecLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
                     } else if (CurrentView == viewEnum.WATERLAYOUT) {
-                        finalFadeAnimation.slideToBottom(waterLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
                     } else if (CurrentView == viewEnum.GASLAYOUT) {
-                        finalFadeAnimation.slideToBottom(gasLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
-                        finalFadeAnimation.slideToBottom(tempLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
                     } else {//announcement
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
                     CurrentView = viewEnum.INTRO;
 
-                } else if (checkedId == R.id.btn_water) {
-                    finalFadeAnimation.slideFromTop(waterLayout);
+                } else if (checkedId == R.id.btn_electricity) {
+
                     if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(Introduction);
-                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
-                        finalFadeAnimation.slideToBottom(elecLayout);
+                    } else if (CurrentView == viewEnum.WATERLAYOUT) {
                     } else if (CurrentView == viewEnum.GASLAYOUT) {
-                        finalFadeAnimation.slideToBottom(gasLayout);
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
-                        finalFadeAnimation.slideToBottom(tempLayout);
                     } else {//announcement
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(viewPager);
+                        //  finalFadeAnimation.slideToBottom(viewPager);
+
                     }
+                    onePlot.setVisibility(View.GONE);
+                    initGraphLayout(viewEnum.ELECLAYOUT);
+                    onePlot.setVisibility(View.VISIBLE);
+                    CurrentView = viewEnum.ELECLAYOUT;
+
+                } else if (checkedId == R.id.btn_water) {
+
+                    //   finalFadeAnimation.slideFromTop(waterLayout);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideFromTop(oneLayout);
+                        finalFadeAnimation.slideToBottom(Introduction);
+                        //      finalFadeAnimation.slideToBottom(Introduction);
+                    } else if (CurrentView == viewEnum.ELECLAYOUT) {
+                    } else if (CurrentView == viewEnum.GASLAYOUT) {
+                    } else if (CurrentView == viewEnum.TEMPLAYOUT) {
+                    } else {//announcement
+                        finalFadeAnimation.slideFromTop(oneLayout);
+                        finalFadeAnimation.slideToBottom(viewPager);
+                        //         finalFadeAnimation.slideToBottom(viewPager);
+                    }
+                    onePlot.setVisibility(View.GONE);
+                    initGraphLayout(viewEnum.WATERLAYOUT);
+                    onePlot.setVisibility(View.VISIBLE);
                     CurrentView = viewEnum.WATERLAYOUT;
 
                 } else if (checkedId == R.id.btn_temperature) {
-                    finalFadeAnimation.slideFromTop(tempLayout);
+
+                    //   finalFadeAnimation.slideFromTop(tempLayout);
                     if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(Introduction);
+                        //             finalFadeAnimation.slideToBottom(Introduction);
                     } else if (CurrentView == viewEnum.ELECLAYOUT) {
-                        finalFadeAnimation.slideToBottom(elecLayout);
                     } else if (CurrentView == viewEnum.WATERLAYOUT) {
-                        finalFadeAnimation.slideToBottom(waterLayout);
                     } else if (CurrentView == viewEnum.GASLAYOUT) {
-                        finalFadeAnimation.slideToBottom(gasLayout);
                     } else {//announcement
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
+                    onePlot.setVisibility(View.GONE);
+                    initGraphLayout(viewEnum.TEMPLAYOUT);
+                    onePlot.setVisibility(View.VISIBLE);
                     CurrentView = viewEnum.TEMPLAYOUT;
 
                 } else if (checkedId == R.id.btn_gas) {
-                    finalFadeAnimation.slideFromTop(gasLayout);
+
                     if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(Introduction);
+                        //       finalFadeAnimation.slideToBottom(Introduction);
                     } else if (CurrentView == viewEnum.ELECLAYOUT) {
-                        finalFadeAnimation.slideToBottom(elecLayout);
+                        onePlot.clear();
                     } else if (CurrentView == viewEnum.WATERLAYOUT) {
-                        finalFadeAnimation.slideToBottom(waterLayout);
+                        onePlot.clear();
+                        ;
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
-                        finalFadeAnimation.slideToBottom(tempLayout);
+                        onePlot.clear();
                     } else {//announcement
+                        finalFadeAnimation.slideFromTop(oneLayout);
                         finalFadeAnimation.slideToBottom(viewPager);
                     }
+                    onePlot.setVisibility(View.GONE);
+                    initGraphLayout(viewEnum.GASLAYOUT);
+                    onePlot.setVisibility(View.VISIBLE);
                     CurrentView = viewEnum.GASLAYOUT;
 
                 } else if (checkedId == R.id.btn_announcements) {
                     finalFadeAnimation.slideFromTop(viewPager);
                     if (CurrentView == viewEnum.INTRO) {
-                        finalFadeAnimation.pagerSlideToBottom(Introduction);
+                        finalFadeAnimation.slideToBottom(Introduction);
                     } else if (CurrentView == viewEnum.ELECLAYOUT) {
-                        finalFadeAnimation.pagerSlideToBottom(elecLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
+                        onePlot.clear();
                     } else if (CurrentView == viewEnum.WATERLAYOUT) {
-                        finalFadeAnimation.pagerSlideToBottom(waterLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
+                        onePlot.clear();
                     } else if (CurrentView == viewEnum.GASLAYOUT) {
-                        finalFadeAnimation.pagerSlideToBottom(gasLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
+                        onePlot.clear();
                     } else { //tempPlot
-                        finalFadeAnimation.pagerSlideToBottom(tempLayout);
+                        finalFadeAnimation.slideToBottom(oneLayout);
+                        onePlot.clear();
+                        //         finalFadeAnimation.slideToBottom(tempLayout);
                     }
                     CurrentView = viewEnum.VIEWPAGER;
-
+                    onePlot.setVisibility(View.GONE);
                 }
             }
         });
     }
 
-    private void initIntroduction() {
-        Introduction = (ImageView) findViewById(R.id.introduction);
-    }
 
-    private void initAnnouncementLayout() {
+    public void initAnnouncementLayout() {
         ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
         bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.one));
         bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.two));
         bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.three));
-        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.four));
-
+//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.four));
+//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.five));
+//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.six));
         ScreenSaver.numberOfAnnouncements = bitmaps.size();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -288,234 +292,214 @@ public class MainActivity extends Activity {
 
     }
 
-    private void initElecGraphLayout() {
+
+    public void initGraphLayout(viewEnum CurrentView) {
+        if (CurrentView == viewEnum.ELECLAYOUT) {
+
+            //Must get data and generate arrays.
+            Number[] readings = {7596, 7887.8, 7744.7, 7318.8, 7263.3, 7779.1, 7921.4, 7747.8, 7650.9, 7684.2, 7439.7, 7257.9, 7713.6, 5948.1, 0, 7393.0, 7082.6, 7178.9, 7581.4, 7599.8, 7501.1, 7476.0, 7536.5, 7159.4, 7141.3, 7141.3}; //Readings
+            Number[] time = {1427921100, 1428007500, 1428093900, 1428180300, 1428266700, 1428353100, 1428439500, 1428525900, 1428612300, 1428698700, 1428785100, 1428871500, 1428957900, 1429044300, 1429130700, 1429217100, 1429303500, 1429389900, 1429476300, 1429562700, 1429649100, 1429735500, 1429821900, 1429908300, 1429994700, 1430081100};
+            // initialize our XYPlot reference:
+            onePlot = (XYPlot) findViewById(R.id.elecUsagePlot);
+
+            XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Electricity Usage Plot");
+
+            LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+            plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+            plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_elec);
+
+            onePlot.getLegendWidget().setWidth(0); //Disable Legend
+            //------- Range Domain Format -----
+            onePlot.setRangeBoundaries(0, 15000, BoundaryMode.FIXED); //RANGE Boundaries*********
+
+            onePlot.addSeries(myPlot, plotFormat);
+            onePlot.setRangeValueFormat(new DecimalFormat("0"));
+            onePlot.setDomainValueFormat(new Format() {
+                // create a simple date format that draws on the year portion of our timestamp.
+                // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+                // for a full description of SimpleDateFormat.
+
+                private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+
+                @Override
+                public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+
+                    // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                    // we multiply our timestamp by 1000:
+                    long timestamp = ((Number) obj).longValue() * 1000;
+                    Date date = new Date(timestamp);
+                    return dateFormat.format(date, toAppendTo, pos);
+                }
+
+                @Override
+                public Object parseObject(String source, ParsePosition pos) {
+                    return null;
+
+                }
+            });
 
 
-        //Must get data and generate arrays.
-        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
-        float min = GraphHelper.getMin(intreadings);
-        float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
-        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
+            Paint lineFill = new Paint(); //Shade Format b
+            lineFill.setAlpha(180);
+            lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
+            plotFormat.setFillPaint(lineFill);
+            //This gets rid of the black border (up to the graph) there is no black border around the labels
+            onePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+            onePlot.getBackgroundPaint().setColor(Color.WHITE);
 
-        // initialize our XYPlot reference:
-        elecUsagePlot = (XYPlot) findViewById(R.id.elecUsagePlot);
+        } else if (CurrentView == viewEnum.WATERLAYOUT) {
+            Number[] readings = {4773, 4695, 5647, 2865, 2729, 4858, 4208, 4048, 4311, 4098, 2611, 2251, 4165, 1262, 0, 0, 896, 2263, 2749, 3991, 4064, 3834, 3875, 4006, 2624, 2423}; //Readings
+            Number[] time = {1427921100, 1428007500, 1428093900, 1428180300, 1428266700, 1428353100, 1428439500, 1428525900, 1428612300, 1428698700, 1428785100, 1428871500, 1428957900, 1429044300, 1429130700, 1429217100, 1429303500, 1429389900, 1429476300, 1429562700, 1429649100, 1429735500, 1429821900, 1429908300, 1429994700, 1430081100};
+            // initialize our XYPlot reference:
+            onePlot = (XYPlot) findViewById(R.id.waterPlot);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Electricity Usage Plot");
+            XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Water Usage Plot");
 
-        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
-        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
-        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_elec);
+            LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+            plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+            plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_water);
 
-        elecUsagePlot.getLegendWidget().setWidth(0); //Disable Legend
-        //------- Range Domain Format -----
-        elecUsagePlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+            onePlot.getLegendWidget().setWidth(0); //Disable Legend
+            //------- Range Domain Format -----
+            onePlot.setRangeBoundaries(0, 8000, BoundaryMode.FIXED); //RANGE Boundaries*********
 
-        elecUsagePlot.addSeries(myPlot, plotFormat);
-        elecUsagePlot.setRangeValueFormat(new DecimalFormat("0"));
-        elecUsagePlot.setDomainValueFormat(new Format() {
-            // create a simple date format that draws on the year portion of our timestamp.
-            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
-            // for a full description of SimpleDateFormat.
+            onePlot.addSeries(myPlot, plotFormat);
+            onePlot.setRangeValueFormat(new DecimalFormat("0"));
+            onePlot.setDomainValueFormat(new Format() {
+                // create a simple date format that draws on the year portion of our timestamp.
+                // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+                // for a full description of SimpleDateFormat.
 
-            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+                private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
 
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                @Override
+                public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 
-                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
-                // we multiply our timestamp by 1000:
-                long timestamp = ((Number) obj).longValue() * 1000;
-                Date date = new Date(timestamp);
-                return dateFormat.format(date, toAppendTo, pos);
-            }
+                    // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                    // we multiply our timestamp by 1000:
+                    long timestamp = ((Number) obj).longValue() * 1000;
+                    Date date = new Date(timestamp);
+                    return dateFormat.format(date, toAppendTo, pos);
+                }
 
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
+                @Override
+                public Object parseObject(String source, ParsePosition pos) {
+                    return null;
 
-            }
-        });
-
-
-        Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(180);
-        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.GREEN, Shader.TileMode.MIRROR));
-        plotFormat.setFillPaint(lineFill);
-        //This gets rid of the black border (up to the graph) there is no black border around the labels
-        elecUsagePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        elecUsagePlot.getBackgroundPaint().setColor(Color.WHITE);
+                }
+            });
 
 
-    }
+            Paint lineFill = new Paint(); //Shade Format b
+            lineFill.setAlpha(180);
+            lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
+            plotFormat.setFillPaint(lineFill);
+            onePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+            onePlot.getBackgroundPaint().setColor(Color.WHITE);
+        } else if (CurrentView == viewEnum.TEMPLAYOUT) {
 
-    private void initTempGraphLayout() {
-        //Must get data and generate arrays.
+            Number[] readings = {38, 40, 40.5, 34.5, 36.5, 41.0, 42.5, 37.0, 38.0, 42.0, 37.5, 37.5, 34.5, 32.0, 41.0, 40.5, 42.0, 44.5, 45.5, 37.0, 40.0, 39.5, 38.5, 40.5, 43.0, 47.0}; //Readings
+            Number[] time = {1427921100, 1428007500, 1428093900, 1428180300, 1428266700, 1428353100, 1428439500, 1428525900, 1428612300, 1428698700, 1428785100, 1428871500, 1428957900, 1429044300, 1429130700, 1429217100, 1429303500, 1429389900, 1429476300, 1429562700, 1429649100, 1429735500, 1429821900, 1429908300, 1429994700, 1430081100};
+            // initialize our XYPlot reference:
+            onePlot = (XYPlot) findViewById(R.id.tempPlot);
 
-        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
-        float min = GraphHelper.getMin(intreadings);
-        float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
-        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
+            XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Temperature Plot");
 
-        // initialize our XYPlot reference:
-        tempPlot = (XYPlot) findViewById(R.id.tempPlot);
+            LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+            plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+            plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_temp);
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Temperature Plot");
+            onePlot.getLegendWidget().setWidth(0); //Disable Legend
+            //------- Range Domain Format -----
+            onePlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
 
-        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
-        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
-        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_temp);
+            onePlot.addSeries(myPlot, plotFormat);
+            onePlot.setRangeValueFormat(new DecimalFormat("0"));
+            onePlot.setDomainValueFormat(new Format() {
+                // create a simple date format that draws on the year portion of our timestamp.
+                // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+                // for a full description of SimpleDateFormat.
 
-        tempPlot.getLegendWidget().setWidth(0); //Disable Legend
-        //------- Range Domain Format -----
-        tempPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+                private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
 
-        tempPlot.addSeries(myPlot, plotFormat);
-        tempPlot.setRangeValueFormat(new DecimalFormat("0"));
-        tempPlot.setDomainValueFormat(new Format() {
-            // create a simple date format that draws on the year portion of our timestamp.
-            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
-            // for a full description of SimpleDateFormat.
+                @Override
+                public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 
-            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+                    // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                    // we multiply our timestamp by 1000:
+                    long timestamp = ((Number) obj).longValue() * 1000;
+                    Date date = new Date(timestamp);
+                    return dateFormat.format(date, toAppendTo, pos);
+                }
 
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                @Override
+                public Object parseObject(String source, ParsePosition pos) {
+                    return null;
 
-                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
-                // we multiply our timestamp by 1000:
-                long timestamp = ((Number) obj).longValue() * 1000;
-                Date date = new Date(timestamp);
-                return dateFormat.format(date, toAppendTo, pos);
-            }
-
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-
-            }
-        });
-
-
-        Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(180);
-        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
-        plotFormat.setFillPaint(lineFill);
-        tempPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        tempPlot.getBackgroundPaint().setColor(Color.WHITE);
-    }
-
-    private void initWaterGraphLayout() {
-        //Must get data and generate arrays.
-        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
-        float min = GraphHelper.getMin(intreadings);
-        float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
-        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
-
-        // initialize our XYPlot reference:
-        waterPlot = (XYPlot) findViewById(R.id.waterPlot);
-
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Water Usage Plot");
-
-        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
-        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
-        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_water);
-
-        waterPlot.getLegendWidget().setWidth(0); //Disable Legend
-        //------- Range Domain Format -----
-        waterPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
-
-        waterPlot.addSeries(myPlot, plotFormat);
-        waterPlot.setRangeValueFormat(new DecimalFormat("0"));
-        waterPlot.setDomainValueFormat(new Format() {
-            // create a simple date format that draws on the year portion of our timestamp.
-            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
-            // for a full description of SimpleDateFormat.
-
-            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
-
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-
-                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
-                // we multiply our timestamp by 1000:
-                long timestamp = ((Number) obj).longValue() * 1000;
-                Date date = new Date(timestamp);
-                return dateFormat.format(date, toAppendTo, pos);
-            }
-
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-
-            }
-        });
+                }
+            });
 
 
-        Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(180);
-        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.BLUE, Color.WHITE, Shader.TileMode.MIRROR));
-        plotFormat.setFillPaint(lineFill);
-        waterPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        waterPlot.getBackgroundPaint().setColor(Color.WHITE);
-    }
+            Paint lineFill = new Paint(); //Shade Format b
+            lineFill.setAlpha(180);
+            lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.YELLOW, Color.RED, Shader.TileMode.MIRROR));
+            plotFormat.setFillPaint(lineFill);
+            onePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+            onePlot.getBackgroundPaint().setColor(Color.WHITE);
+        } else if (CurrentView == viewEnum.GASLAYOUT) {
+            Number[] readings = {63786, 72134, 73667, 71013, 81663, 65626, 38419, 41251, 34825, 34911, 47882, 47259, 43357, 22972, 0, 0, 9097, 31011, 22479, 32676, 43711, 41873, 37342, 28893, 30372, 28488}; //Readings
+            Number[] time = {1427921100, 1428007500, 1428093900, 1428180300, 1428266700, 1428353100, 1428439500, 1428525900, 1428612300, 1428698700, 1428785100, 1428871500, 1428957900, 1429044300, 1429130700, 1429217100, 1429303500, 1429389900, 1429476300, 1429562700, 1429649100, 1429735500, 1429821900, 1429908300, 1429994700, 1430081100};
 
-    private void initGasGraphLayout() {
-        //Must get data and generate arrays.
-        float[] intreadings = {46.5f, 34f, 29.12f, 18.2f, 20.1512f, 40.2f, 90.51f, 20.1f};
-        float min = GraphHelper.getMin(intreadings);
-        float max = GraphHelper.getMax(intreadings);
-        Number[] readings = {46.5, 34, 29.12, 18.2, 20.1512, 40.2, 90.51, 20.1}; //Readings
-        Number[] time = {1425688873, 1425689873, 1425694802, 1425695702, 1425696602, 1425697502, 1425698702, 1425699602}; //TimeStamp
+            // initialize our XYPlot reference:
+            onePlot = (XYPlot) findViewById(R.id.gasPlot);
 
-        // initialize our XYPlot reference:
-        gasPlot = (XYPlot) findViewById(R.id.gasPlot);
+            XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Gas Usage Plot");
 
-        XYSeries myPlot = new SimpleXYSeries(Arrays.asList(time), Arrays.asList(readings), "Gas Usage Plot");
+            LineAndPointFormatter plotFormat = new LineAndPointFormatter();
+            plotFormat.setPointLabelFormatter(new PointLabelFormatter());
+            plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_gas);
 
-        LineAndPointFormatter plotFormat = new LineAndPointFormatter();
-        plotFormat.setPointLabelFormatter(new PointLabelFormatter());
-        plotFormat.configure(getApplicationContext(), R.xml.line_point_formatter_with_gas);
+            onePlot.getLegendWidget().setWidth(0); //Disable Legend
+            //------- Range Domain Format -----
+            onePlot.setRangeBoundaries(0, 100000, BoundaryMode.FIXED); //RANGE Boundaries*********
 
-        gasPlot.getLegendWidget().setWidth(0); //Disable Legend
-        //------- Range Domain Format -----
-        gasPlot.setRangeBoundaries(0, 100, BoundaryMode.FIXED); //RANGE Boundaries*********
+            onePlot.addSeries(myPlot, plotFormat);
+            onePlot.setRangeValueFormat(new DecimalFormat("0"));
+            onePlot.setDomainValueFormat(new Format() {
+                // create a simple date format that draws on the year portion of our timestamp.
+                // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+                // for a full description of SimpleDateFormat.
 
-        gasPlot.addSeries(myPlot, plotFormat);
-        gasPlot.setRangeValueFormat(new DecimalFormat("0"));
-        gasPlot.setDomainValueFormat(new Format() {
-            // create a simple date format that draws on the year portion of our timestamp.
-            // see http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
-            // for a full description of SimpleDateFormat.
+                private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
 
-            private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M hh:mm");
+                @Override
+                public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                    // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
+                    // we multiply our timestamp by 1000:
+                    long timestamp = ((Number) obj).longValue() * 1000;
+                    Date date = new Date(timestamp);
+                    return dateFormat.format(date, toAppendTo, pos);
+                }
 
-                // because our timestamps are in seconds and SimpleDateFormat expects milliseconds
-                // we multiply our timestamp by 1000:
-                long timestamp = ((Number) obj).longValue() * 1000;
-                Date date = new Date(timestamp);
-                return dateFormat.format(date, toAppendTo, pos);
-            }
+                @Override
+                public Object parseObject(String source, ParsePosition pos) {
+                    return null;
 
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-
-            }
-        });
+                }
+            });
 
 
-        Paint lineFill = new Paint(); //Shade Format b
-        lineFill.setAlpha(180);
-        lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
-        plotFormat.setFillPaint(lineFill);
-        gasPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        gasPlot.getBackgroundPaint().setColor(Color.WHITE);
+            Paint lineFill = new Paint(); //Shade Format b
+            lineFill.setAlpha(180);
+            lineFill.setShader(new LinearGradient(0, 0, 0, 250, Color.MAGENTA, Color.BLACK, Shader.TileMode.MIRROR));
+            plotFormat.setFillPaint(lineFill);
+            onePlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
+            onePlot.getBackgroundPaint().setColor(Color.WHITE);
+        }
+        onePlot.redraw();
+
+
     }
 
     public void testDatabase(View view) {
@@ -544,8 +528,6 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     private enum viewEnum {
         INTRO,
         ELECLAYOUT,
@@ -555,60 +537,61 @@ public class MainActivity extends Activity {
         VIEWPAGER
     }
 
-    private class ScreenTimerTask extends TimerTask {
-        @Override
-        public void run() {
-            // start screen saver
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (moverTimer != null)
-                        moverTimer.cancel();
-                    moverTimer = new Timer();
-                    moverTimerTask = new MoverTimerTask();
-                    moverTimer.schedule(moverTimerTask, 5000, 5000);
-                }
-            });
-        }
-    }
+//    private class ScreenTimerTask extends TimerTask {
+//        @Override
+//        public void run() {
+//            // start screen saver
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (moverTimer != null)
+//                        moverTimer.cancel();
+//                    moverTimer = new Timer();
+//                    moverTimerTask = new MoverTimerTask();
+//                    moverTimer.schedule(moverTimerTask, 5000, 5000);
+//                }
+//            });
+//        }
+//    }
+//
+//    private class MoverTimerTask extends TimerTask {
+//        @Override
+//        public void run() {
+//            // screen saver code
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ScreenSaver.changeState();
+//                    int announcementToScrollTo = ScreenSaver.currentAnnouncement;
+//
+//
+//                    if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
+//                        if (announcementToScrollTo == 0) {
+//                            viewPager.setCurrentItem(0);
+//                            radioGroup.check(btnAnnouncements.getId());
+//                        } else {
+//                            // no animation needed, just change page
+//                            radioGroup.check(btnAnnouncements.getId());
+//                            viewPager.setCurrentItem(announcementToScrollTo);
+//
+//                        }
+//                    } else if (ScreenSaver.currentState.stateType == StateType.ELECTRICITY) {
+//                        radioGroup.check(btnElectricity.getId());
+//                    } else if (ScreenSaver.currentState.stateType == StateType.INTRO) {
+//                        radioGroup.check(btnIntroduction.getId());
+//                    } else if (ScreenSaver.currentState.stateType == StateType.WATER) {
+//                        radioGroup.check(btnWater.getId());
+//                    } else if (ScreenSaver.currentState.stateType == StateType.TEMPERATURE) {
+//                        radioGroup.check(btnTemperature.getId());
+//                    } else if (ScreenSaver.currentState.stateType == StateType.GAS) {
+//                        radioGroup.check(btnGas.getId());
+//                    }
+//
+//
+//                }
+//            });
+//        }
+//    }
 
-    private class MoverTimerTask extends TimerTask {
-        @Override
-        public void run() {
-            // screen saver code
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ScreenSaver.changeState();
-                    int announcementToScrollTo = ScreenSaver.currentAnnouncement;
-
-
-                    if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
-                        if (announcementToScrollTo == 0) {
-                            viewPager.setCurrentItem(0);
-                            radioGroup.check(btnAnnouncements.getId());
-                        } else {
-                            // no animation needed, just change page
-                            radioGroup.check(btnAnnouncements.getId());
-                            viewPager.setCurrentItem(announcementToScrollTo);
-
-                        }
-                    } else if (ScreenSaver.currentState.stateType == StateType.ELECTRICITY) {
-                        radioGroup.check(btnElectricity.getId());
-                    } else if (ScreenSaver.currentState.stateType == StateType.INTRO) {
-                        radioGroup.check(btnIntroduction.getId());
-                    } else if (ScreenSaver.currentState.stateType == StateType.WATER) {
-                        radioGroup.check(btnWater.getId());
-                    } else if (ScreenSaver.currentState.stateType == StateType.TEMPERATURE) {
-                        radioGroup.check(btnTemperature.getId());
-                    } else if (ScreenSaver.currentState.stateType == StateType.GAS) {
-                        radioGroup.check(btnGas.getId());
-                    }
-
-
-                }
-            });
-        }
-    }
 
 }
