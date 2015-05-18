@@ -44,6 +44,17 @@ import eod.uaa.graph.GraphHelper;
 import eod.uaa.state.ScreenSaver;
 import eod.uaa.state.StateType;
 
+//for map
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.webkit.WebView;
+import android.widget.Toast;
+
+@SuppressLint({ "SetJavaScriptEnabled", "JavascriptInterface" })
 public class MainActivity extends Activity {
 
 
@@ -58,6 +69,7 @@ public class MainActivity extends Activity {
     private RadioButton btnGas;
     private RadioButton btnTemperature;
     private RadioButton btnAnnouncements;
+    private RadioButton btnFindus;
     private ImageAdapter imageAdapter;
     private ViewPager viewPager;
     private ImageView Introduction;
@@ -65,6 +77,14 @@ public class MainActivity extends Activity {
     private XYPlot waterPlot;
     private XYPlot tempPlot;
     private XYPlot gasPlot;
+//for map
+    private WebView webView;
+    private Location mostRecentLocation;
+    double[] lats = new double[20];
+    private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 0;
+    private static final long MINIMUM_TIME_BETWEEN_UPDATES = 0;
+
+    protected LocationManager locationManager;
     private Timer screenTimer;
     private Timer moverTimer;
     private TimerTask screenTimerTask;
@@ -84,6 +104,8 @@ public class MainActivity extends Activity {
         btnGas = (RadioButton) findViewById(R.id.btn_gas);
         btnTemperature = (RadioButton) findViewById(R.id.btn_temperature);
         btnAnnouncements = (RadioButton) findViewById(R.id.btn_announcements);
+        btnFindus= (RadioButton) findViewById(R.id.btn_findus);
+
         initIntroduction();
         initAnnouncementLayout();
         initElecGraphLayout();
@@ -91,6 +113,7 @@ public class MainActivity extends Activity {
         initGasGraphLayout();
         initWaterGraphLayout();
         initFadeAnimations();
+        initMaps();
         initTimers();
         Introduction.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.INVISIBLE);
@@ -98,6 +121,7 @@ public class MainActivity extends Activity {
         waterPlot.setVisibility(View.INVISIBLE);
         tempPlot.setVisibility(View.INVISIBLE);
         gasPlot.setVisibility(View.INVISIBLE);
+        webView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -192,6 +216,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(elecPlot);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.WATERPLOT) {
                         finalFadeAnimation.slideToBottom(waterPlot);
                     } else if (CurrentView == viewEnum.GASPLOT) {
@@ -207,6 +233,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(Introduction);
                     if (CurrentView == viewEnum.ELECPLOT) {
                         finalFadeAnimation.slideToBottom(elecPlot);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.WATERPLOT) {
                         finalFadeAnimation.slideToBottom(waterPlot);
                     } else if (CurrentView == viewEnum.GASPLOT) {
@@ -222,6 +250,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(waterPlot);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.ELECPLOT) {
                         finalFadeAnimation.slideToBottom(elecPlot);
                     } else if (CurrentView == viewEnum.GASPLOT) {
@@ -237,6 +267,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(tempPlot);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.ELECPLOT) {
                         finalFadeAnimation.slideToBottom(elecPlot);
                     } else if (CurrentView == viewEnum.WATERPLOT) {
@@ -252,6 +284,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(gasPlot);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.ELECPLOT) {
                         finalFadeAnimation.slideToBottom(elecPlot);
                     } else if (CurrentView == viewEnum.WATERPLOT) {
@@ -267,6 +301,8 @@ public class MainActivity extends Activity {
                     finalFadeAnimation.slideFromTop(viewPager);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
+                    } else  if (CurrentView == viewEnum.WEBVIEW) {
+                        finalFadeAnimation.slideToBottom(webView);
                     } else if (CurrentView == viewEnum.ELECPLOT) {
                         finalFadeAnimation.slideToBottom(elecPlot);
                     } else if (CurrentView == viewEnum.WATERPLOT) {
@@ -277,6 +313,22 @@ public class MainActivity extends Activity {
                         finalFadeAnimation.slideToBottom(tempPlot);
                     }
                     CurrentView = viewEnum.VIEWPAGER;
+
+                }
+                else if (checkedId == R.id.btn_findus) {
+                    finalFadeAnimation.slideFromTop(webView);
+                    if (CurrentView == viewEnum.INTRO) {
+                        finalFadeAnimation.slideToBottom(Introduction);
+                    }else if (CurrentView == viewEnum.ELECPLOT) {
+                        finalFadeAnimation.slideToBottom(elecPlot);
+                    } else if (CurrentView == viewEnum.WATERPLOT) {
+                        finalFadeAnimation.slideToBottom(waterPlot);
+                    } else if (CurrentView == viewEnum.GASPLOT) {
+                        finalFadeAnimation.slideToBottom(gasPlot);
+                    } else { //tempPlot
+                        finalFadeAnimation.slideToBottom(tempPlot);
+                    }
+                    CurrentView = viewEnum.WEBVIEW;
 
                 }
             }
@@ -429,7 +481,6 @@ public class MainActivity extends Activity {
             @Override
             public Object parseObject(String source, ParsePosition pos) {
                 return null;
-
             }
         });
 
@@ -553,6 +604,27 @@ public class MainActivity extends Activity {
         gasPlot.getGraphWidget().getBackgroundPaint().setColor(Color.TRANSPARENT);
         gasPlot.getBackgroundPaint().setColor(Color.WHITE);
     }
+// the map takes last known location and  directs it to the building (implementation in mapindex.html)
+    private void initMaps() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+// showCurrentLocation
+        mostRecentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        //prepare webview and load mapindex.html
+        webView = (WebView) findViewById(R.id.webview);
+        webView.setInitialScale(1);
+        webView.addJavascriptInterface(new ScriptINTF(this), "android");
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().getBuiltInZoomControls();
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.setScrollbarFadingEnabled(false);
+        webView.loadUrl("file:///android_asset/mapindex.html");
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+}
 
     public void testDatabase(View view) {
         Log.d("", "Clicked");
@@ -614,6 +686,7 @@ public class MainActivity extends Activity {
         WATERPLOT,
         TEMPPLOT,
         GASPLOT,
+        WEBVIEW,
         VIEWPAGER
     }
 
@@ -675,11 +748,25 @@ public class MainActivity extends Activity {
                         // radioGroup.clearCheck();
                         radioGroup.check(btnGas.getId());
                     }
-
-
                 }
             });
         }
     }
-
+//for javascript reading and getting latitude
+    public class ScriptINTF {
+        Context mContext;
+        // Instantiate the interface and set the context
+        ScriptINTF(Context c) {
+            mContext = c;
+        }
+    //to pass latitute and longitude to the javaScript(mapindex.html) to show and update directions
+        public double getLatitude() {
+            mostRecentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            return mostRecentLocation.getLatitude();
+        }
+        public double getLongitude() {
+            mostRecentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            return mostRecentLocation.getLongitude();
+        }
+    }
 }

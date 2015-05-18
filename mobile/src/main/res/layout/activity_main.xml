@@ -6,16 +6,20 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
+
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
             android:layout_weight="1"
-            android:background="#fff">
+            android:background="#fff"
+
+            >
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
@@ -126,6 +130,10 @@
                 android:background="@color/uaagreen_primary"
                 android:scaleType="center"
                 android:src="@raw/new_eng" />
+
+            <WebView android:id="@+id/webview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
 
         </FrameLayout>
 
@@ -245,6 +253,22 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"
                 android:text="Announcements"
+                android:textColor="@drawable/uaa_button_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <RadioButton
+                android:id="@+id/btn_findus"
+                style="@style/TabStyle"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/uaa_button_background"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+                android:text="Find Us"
                 android:textColor="@drawable/uaa_button_text"
                 android:textSize="20sp"
                 android:textStyle="bold" />
