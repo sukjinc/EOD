@@ -1,19 +1,17 @@
 package eod.uaa.main;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -31,7 +29,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Timer;
@@ -39,12 +36,12 @@ import java.util.TimerTask;
 
 import eod.uaa.animation.SlideAnimation;
 import eod.uaa.announcement.ImageAdapter;
-import eod.uaa.state.ScreenSaver;
 
 public class MainActivity extends Activity {
-    public ViewPager viewPager;
+    //public ANNOUNCEMENTS ANNOUNCEMENTS;
     public ImageView Introduction;
     public LinearLayout oneLayout;
+    public LinearLayout webLayout;
     public XYPlot onePlot;
     viewEnum CurrentView = viewEnum.INTRO;
     private RadioGroup radioGroup;
@@ -59,6 +56,9 @@ public class MainActivity extends Activity {
     private Timer moverTimer;
     private TimerTask screenTimerTask;
     private TimerTask moverTimerTask;
+    private WebView webView;
+    private ImageView forwardArrow;
+    private ImageView backArrow;
     private MainActivity activity;
 
     @Override
@@ -80,7 +80,37 @@ public class MainActivity extends Activity {
         Introduction = (ImageView) findViewById(R.id.introduction);
         oneLayout = (LinearLayout) findViewById(R.id.oneLayout);
         onePlot = (XYPlot) findViewById(R.id.tempPlot);
+
+        forwardArrow = (ImageView) findViewById(R.id.forwardarrow);
+        backArrow = (ImageView) findViewById(R.id.backarrow);
+
+        forwardArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webView != null) {
+                    webView.goForward();
+                    updateArrows();
+                }
+            }
+        });
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.goBack();
+                updateArrows();
+            }
+        });
+
+        webLayout = (LinearLayout) findViewById(R.id.weblayout);
+        webView = null;
+        //createWebView();
+
         initFadeAnimations();
+
+        Introduction.setVisibility(View.VISIBLE);
+        webLayout.setVisibility(View.GONE);
+
 
 //
 //        JSONObject Edemand;
@@ -141,7 +171,7 @@ public class MainActivity extends Activity {
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
                         finalFadeAnimation.slideToBottom(oneLayout);
                     } else {//announcement
-                        finalFadeAnimation.slideToBottom(viewPager);
+                        finalFadeAnimation.slideToBottom(webLayout);
                     }
                     CurrentView = viewEnum.INTRO;
 
@@ -155,8 +185,8 @@ public class MainActivity extends Activity {
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
                     } else {//announcement
                         finalFadeAnimation.slideFromTop(oneLayout);
-                        finalFadeAnimation.slideToBottom(viewPager);
-                        //  finalFadeAnimation.slideToBottom(viewPager);
+                        finalFadeAnimation.slideToBottom(webLayout);
+                        //  finalFadeAnimation.slideToBottom(ANNOUNCEMENTS);
 
                     }
                     onePlot.setVisibility(View.GONE);
@@ -176,8 +206,8 @@ public class MainActivity extends Activity {
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
                     } else {//announcement
                         finalFadeAnimation.slideFromTop(oneLayout);
-                        finalFadeAnimation.slideToBottom(viewPager);
-                        //         finalFadeAnimation.slideToBottom(viewPager);
+                        finalFadeAnimation.slideToBottom(webLayout);
+                        //         finalFadeAnimation.slideToBottom(ANNOUNCEMENTS);
                     }
                     onePlot.setVisibility(View.GONE);
                     initGraphLayout(viewEnum.WATERLAYOUT);
@@ -196,7 +226,7 @@ public class MainActivity extends Activity {
                     } else if (CurrentView == viewEnum.GASLAYOUT) {
                     } else {//announcement
                         finalFadeAnimation.slideFromTop(oneLayout);
-                        finalFadeAnimation.slideToBottom(viewPager);
+                        finalFadeAnimation.slideToBottom(webLayout);
                     }
                     onePlot.setVisibility(View.GONE);
                     initGraphLayout(viewEnum.TEMPLAYOUT);
@@ -213,12 +243,11 @@ public class MainActivity extends Activity {
                         onePlot.clear();
                     } else if (CurrentView == viewEnum.WATERLAYOUT) {
                         onePlot.clear();
-                        ;
                     } else if (CurrentView == viewEnum.TEMPLAYOUT) {
                         onePlot.clear();
                     } else {//announcement
                         finalFadeAnimation.slideFromTop(oneLayout);
-                        finalFadeAnimation.slideToBottom(viewPager);
+                        finalFadeAnimation.slideToBottom(webLayout);
                     }
                     onePlot.setVisibility(View.GONE);
                     initGraphLayout(viewEnum.GASLAYOUT);
@@ -226,7 +255,8 @@ public class MainActivity extends Activity {
                     CurrentView = viewEnum.GASLAYOUT;
 
                 } else if (checkedId == R.id.btn_announcements) {
-                    finalFadeAnimation.slideFromTop(viewPager);
+                    createWebView();
+                    finalFadeAnimation.slideFromTop(webLayout);
                     if (CurrentView == viewEnum.INTRO) {
                         finalFadeAnimation.slideToBottom(Introduction);
                     } else if (CurrentView == viewEnum.ELECLAYOUT) {
@@ -243,55 +273,12 @@ public class MainActivity extends Activity {
                         onePlot.clear();
                         //         finalFadeAnimation.slideToBottom(tempLayout);
                     }
-                    CurrentView = viewEnum.VIEWPAGER;
+                    CurrentView = viewEnum.ANNOUNCEMENTS;
                     onePlot.setVisibility(View.GONE);
                 }
             }
         });
     }
-
-
-    public void initAnnouncementLayout() {
-        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
-        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.one));
-        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.two));
-        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.three));
-//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.four));
-//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.five));
-//        bitmaps.add(BitmapFactory.decodeResource(this.getResources(), R.raw.six));
-        ScreenSaver.numberOfAnnouncements = bitmaps.size();
-
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        Intent i = getIntent();
-        int position = i.getIntExtra("position", 0);
-        imageAdapter = new ImageAdapter(MainActivity.this, bitmaps);
-        //viewPager.setAdapter(infinitePagerAdapter);
-        viewPager.setAdapter(imageAdapter);
-        viewPager.setCurrentItem(position);
-
-
-        // infinite view page http://stackoverflow.com/questions/7546224/viewpager-as-a-circular-queue-wrapping
-
-        viewPager.setOnPageChangeListener(new OnPageChangeListener() {
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                imageAdapter.unzoomImageView();
-            }
-        });
-
-    }
-
 
     public void initGraphLayout(viewEnum CurrentView) {
         if (CurrentView == viewEnum.ELECLAYOUT) {
@@ -534,8 +521,60 @@ public class MainActivity extends Activity {
         WATERLAYOUT,
         TEMPLAYOUT,
         GASLAYOUT,
-        VIEWPAGER
+        ANNOUNCEMENTS
     }
+
+    private void createWebView() {
+        if (webView != null) {
+            webView.clearHistory();
+            webView.clearCache(true);
+            webView.loadUrl("about:blank");
+            webView.freeMemory();
+            webView.pauseTimers();
+            webView = null;
+        }
+
+        webView = (WebView) findViewById(R.id.webview);
+        webView.clearHistory();
+        webView.loadUrl("http://www.uaa.alaska.edu/");
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                updateArrows();
+            }
+        });
+        updateArrows();
+    }
+
+    private void updateArrows()
+    {
+        if(webView != null)
+        {
+            if(webView.canGoBack())
+            {
+                Log.d("", "t");
+                backArrow.setImageResource(R.drawable.backarrow);
+            }
+            else
+            {
+                backArrow.setImageResource(R.drawable.backarrowgrey);
+            }
+
+            if(webView.canGoForward())
+            {
+                forwardArrow.setImageResource(R.drawable.forwardarrow);
+            }
+            else
+            {
+                forwardArrow.setImageResource(R.drawable.forwardarrowgrey);
+            }
+        }
+    }
+}
+
+
+
+
 
 //    private class ScreenTimerTask extends TimerTask {
 //        @Override
@@ -567,12 +606,12 @@ public class MainActivity extends Activity {
 //
 //                    if (ScreenSaver.currentState.stateType == StateType.ANNOUNCEMENTS) {
 //                        if (announcementToScrollTo == 0) {
-//                            viewPager.setCurrentItem(0);
+//                            ANNOUNCEMENTS.setCurrentItem(0);
 //                            radioGroup.check(btnAnnouncements.getId());
 //                        } else {
 //                            // no animation needed, just change page
 //                            radioGroup.check(btnAnnouncements.getId());
-//                            viewPager.setCurrentItem(announcementToScrollTo);
+//                            ANNOUNCEMENTS.setCurrentItem(announcementToScrollTo);
 //
 //                        }
 //                    } else if (ScreenSaver.currentState.stateType == StateType.ELECTRICITY) {
@@ -594,4 +633,4 @@ public class MainActivity extends Activity {
 //    }
 
 
-}
+

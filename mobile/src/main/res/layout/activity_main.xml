@@ -186,6 +186,60 @@
                 android:scaleType="center"
                 android:src="@raw/intro" />
 
+            <LinearLayout
+                android:id="@+id/weblayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:background="#000"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/titleweblayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/webtitle"
+                        android:text="University of Alaska Anchorage Website"
+                        android:textColor="@color/uaagold_primary"
+                        android:textSize="50sp"/>
+
+                    <ImageView
+                        android:id="@+id/backarrow"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/backarrow"
+                        android:layout_marginLeft="50dp"
+                        android:clickable="true"/>
+
+                    <ImageView
+                        android:id="@+id/forwardarrow"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/forwardarrow"
+                        android:layout_marginLeft="10dp"
+                        android:clickable="true"/>
+
+                </LinearLayout>
+
+                <WebView
+                    android:id="@+id/webview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="#000000"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="40dp" />
+
+            </LinearLayout>
+
         </FrameLayout>
 
         <RadioGroup
