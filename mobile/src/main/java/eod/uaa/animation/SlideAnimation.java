@@ -3,11 +3,18 @@ package eod.uaa.animation;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 
-
+/**
+ * Animates slide transitions.
+ */
 public class SlideAnimation {
 
 
     // To animate view slide in from top to view
+
+    /**
+     * Slide enters from top
+     * @param view
+     */
     public void slideFromTop(View view) {
 
         TranslateAnimation animate = new TranslateAnimation(0, 0, -view.getWidth(), 0);
@@ -22,6 +29,11 @@ public class SlideAnimation {
     }
 
     // To animate view slide out from view to bottom
+
+    /**
+     * Slide Exits to bottom.
+     * @param view
+     */
     public void slideToBottom(View view) {
         TranslateAnimation animate = new TranslateAnimation(0, 0, 0, view.getHeight());
         animate.setDuration(700);

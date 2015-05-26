@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
+    <script type="text/javascript">
+        var map;
+        //initializes map and directions
+        function initialize() {
+            var latitude = 61;
+            var longitude = -149;
+            /*
+            if (window.android) {
+                latitude = window.android.getLatitude();
+                longitude = window.android.getLongitude();
+            }*/
+            var dest = new google.maps.LatLng(61.188753, -149.826814);
+            var directionsService = new google.maps.DirectionsService();
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+            var mapOptions =
+                   {
+                       center: dest,
+                       mapTypeId: google.maps.MapTypeId.ROADMAP,
+                       mapTypeControl: true,
+                       streetViewControl: true,
+                       overviewMapControl: true,
+                       zoom: 13,
+                       panControl: true
+                   };
+            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+            directionsDisplay.setMap(map);
+            //  changePointer();
+            //location changes listener for every 5 second
+            //gets current location and displays new directions
+            function updateRoute() {
+                //get user location from android device
+                if (window.android) {
+                    latitude = window.android.getLatitude();
+                    longitude = window.android.getLongitude();
+                }
+                var location = new google.maps.LatLng(latitude, longitude);
+                //directions settings
+                var request = {
+                    origin: location,
+                    destination: dest,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+                //directions update
+                directionsService.route(request, function (response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                    }
+                });
+            }
+            setInterval(updateRoute, 5000);
+        };
+    </script>
+    <title>Insert title here</title>
+</head>
+<body>
+<style>
+    body {
+    height: 100%;
+    width: 100%;
+    }
+</style>
+<div id="tabs-6" class="tabContent">
+    <div id="map-canvas" title="Map"></div>
+</div>
+<script type="text/javascript">initialize();</script>
+<style>
+    #map-canvas {
+    position: absolute;
+    height: inherit !important;
+    width: inherit !important;
+    padding: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    }
+</style>
+</body>
+</html>

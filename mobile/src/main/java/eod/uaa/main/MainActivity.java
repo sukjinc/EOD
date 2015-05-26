@@ -62,7 +62,9 @@ public class MainActivity extends Activity {
     private MainActivity activity;
 
     @Override
-
+/**
+ * Initializes all of the required resources on Create.
+ */
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
         super.onCreate(savedInstanceState);
@@ -152,7 +154,11 @@ public class MainActivity extends Activity {
 //        screenTimer.schedule(screenTimerTask, 30000);
 //    }
 
-
+    /**
+     *  Controls fade in and fade out animation.
+     *  It has radioGroup.setOnCheckedChangeLisner
+     *  It will call slide to bottom or slide from top animation.
+     */
     private void initFadeAnimations() {
         SlideAnimation slideAnimation = new SlideAnimation();
         final SlideAnimation finalFadeAnimation = slideAnimation;
@@ -280,6 +286,12 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * Initialize graph depending on the current view.
+     * viewEnum is a custom enumerator that includes list of views that application can be on.
+     * Current view is changed in method initFadeAnimations()
+     * @param CurrentView
+     */
     public void initGraphLayout(viewEnum CurrentView) {
         if (CurrentView == viewEnum.ELECLAYOUT) {
 
@@ -494,8 +506,10 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    /**
+     * Inflate the menu; this adds items to the action bar if it is present.
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -515,15 +529,9 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private enum viewEnum {
-        INTRO,
-        ELECLAYOUT,
-        WATERLAYOUT,
-        TEMPLAYOUT,
-        GASLAYOUT,
-        ANNOUNCEMENTS
-    }
-
+    /**
+     * Creates Webview for announcements It requires internet use permission.
+     */
     private void createWebView() {
         if (webView != null) {
             webView.clearHistory();
@@ -546,34 +554,39 @@ public class MainActivity extends Activity {
         updateArrows();
     }
 
-    private void updateArrows()
-    {
-        if(webView != null)
-        {
-            if(webView.canGoBack())
-            {
+    /**
+     * Handles forward and back arrows when viewing Webview.
+     */
+    private void updateArrows() {
+        if (webView != null) {
+            if (webView.canGoBack()) {
                 Log.d("", "t");
                 backArrow.setImageResource(R.drawable.backarrow);
-            }
-            else
-            {
+            } else {
                 backArrow.setImageResource(R.drawable.backarrowgrey);
             }
 
-            if(webView.canGoForward())
-            {
+            if (webView.canGoForward()) {
                 forwardArrow.setImageResource(R.drawable.forwardarrow);
-            }
-            else
-            {
+            } else {
                 forwardArrow.setImageResource(R.drawable.forwardarrowgrey);
             }
         }
     }
+
+    /**
+     * Custom Enum class that includes all of the possible views
+     * Application requires this to generate animated trasition.
+     */
+    private enum viewEnum {
+        INTRO,
+        ELECLAYOUT,
+        WATERLAYOUT,
+        TEMPLAYOUT,
+        GASLAYOUT,
+        ANNOUNCEMENTS
+    }
 }
-
-
-
 
 
 //    private class ScreenTimerTask extends TimerTask {

@@ -40,7 +40,7 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+        return view == object;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ImageAdapter extends PagerAdapter {
         Bitmap bitmap = bitmaps.get(position);
         imgDisplay.setImageBitmap(bitmap);
 
-        ((ViewPager) container).addView(viewLayout);
+        container.addView(viewLayout);
 
         return viewLayout;
 
@@ -64,7 +64,7 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((RelativeLayout) object);
+        container.removeView((RelativeLayout) object);
     }
 
     public void unzoomImageView()
